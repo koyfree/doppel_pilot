@@ -3,6 +3,8 @@ import time
 from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
 
+st.set_page_config(page_title="프레임 페이지", layout="wide")
+
 def run():
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
 
@@ -101,4 +103,3 @@ def run():
             st.session_state.messages.append({"role": "user", "content": user_input})
             st.rerun()
 
-st.set_page_config()
