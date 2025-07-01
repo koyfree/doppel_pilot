@@ -19,13 +19,15 @@ with col2:
         st.session_state["topic"] = "relationship_conflict"
 
 # 3. 구글시트에서 knowledge 불러오기
-sheet_url = "https://docs.google.com/spreadsheets/d/1pQ9Wps-6sJH3EWgEgb4QdJJ_MItBBnSbTPbTKCWQhLI/edit?usp=sharing"
+sheet_url = "https://docs.google.com/spreadsheets/d/1pQ9Wps-6sJH3EWgEgb4QdJJ_MItBBnSbTPbTKCWQhLI/edit?gid=1798623846#gid=1798623846"
 openai_api_key = st.secrets["openai"]["api_key"]
 
 if user_name:
     try:
         knowledge = build_knowledge_dict(sheet_url, openai_api_key)
-        st.write("📌 전체 ID 목록:", list(knowledge.keys()))
+# 🔍 디버깅용 출력
+        st.write("📌 열 이름 목록:", list(knowledge.keys()))  # <- 여기!
+        st.write("📌 입력한 이름:", user_name)
         if user_name not in knowledge:
             st.error("⚠️ ID를 정확하게 기입해 주세요. ID는 대소문자를 구별합니다.")
         else:
