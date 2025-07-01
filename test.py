@@ -3,10 +3,6 @@ import time
 from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
 
-st.set_page_config(page_title="프레임 페이지", layout="wide")
-st.title("프레임 페이지입니다.")
-st.write("이 페이지는 정상적으로 로드되었습니다.")
-
 def run():
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
 
