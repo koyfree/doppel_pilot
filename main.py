@@ -51,9 +51,9 @@ if user_name:
                 # 5. 주제에 따라 페이지 전환
                 if st.button("👉 시작하기"):
                     if st.session_state["topic"] == "mental_health":
-                        import frame as app
+                        st.switch_page("pages/frame.py")
                     elif st.session_state["topic"] == "relationship_conflict":
-                        import dpl_rel_new as app
+                        st.switch_page("pages/dpl_rel_new.py")
             else:
                 st.info("👆 위에서 먼저 주제를 선택해 주세요.")
 
