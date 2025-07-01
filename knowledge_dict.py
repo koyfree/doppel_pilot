@@ -136,5 +136,5 @@ Profile:
 [Weekly Activities Overview]
 \t•\t{row['weekly_activities']}
 """.strip()
-    st.write("📌 전체 열 이름:", df.columns.tolist())
+
     return knowledge
