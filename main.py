@@ -25,6 +25,7 @@ openai_api_key = st.secrets["openai"]["api_key"]
 if user_name:
     try:
         knowledge = build_knowledge_dict(sheet_url, openai_api_key)
+        st.write("📌 전체 ID 목록:", list(knowledge.keys()))
         if user_name not in knowledge:
             st.error("⚠️ ID를 정확하게 기입해 주세요. ID는 대소문자를 구별합니다.")
         else:
