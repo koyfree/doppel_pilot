@@ -1,7 +1,7 @@
 import streamlit as st
 import time
 from openai import OpenAI
-from prompts import SYSTEM_PROMPT_TEMPLATE
+from prompts import SYSTEM_PROMPT_MTL
 
 def run():
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
