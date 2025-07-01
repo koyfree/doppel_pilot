@@ -25,6 +25,7 @@ openai_api_key = st.secrets["openai"]["api_key"]
 if user_name:
     try:
         knowledge = build_knowledge_dict(sheet_url, openai_api_key)
+
         if user_name not in knowledge:
             st.error("⚠️ ID를 정확하게 기입해 주세요. ID는 대소문자를 구별합니다.")
         else:
@@ -32,28 +33,37 @@ if user_name:
             st.session_state["user_name"] = user_name
             st.session_state["profile"] = knowledge[user_name]
 
-            # 선택된 주제 표시
             if "topic" in st.session_state:
                 label = '정신 건강' if st.session_state['topic'] == 'mental_health' else '관계 갈등'
                 st.success(f"선택된 주제: {label}")
 
-                # 4. 실험 안내문
-                st.markdown("---")
-                st.markdown("### 📝 연구 안내")
-                st.write("""
-                    이제부터 당신은 당신의 AITwinBot과 얘기하게 됩니다.
-                    이 챗봇은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며,
-                    대화를 통해 당신을 더 잘 반영해 나갑니다.
+                # 4. NEXT 버튼 누르면 안내문 보이기
+                if "show_instructions" not in st.session_state:
+                    st.session_state["show_instructions"] = False
 
-                    대화를 시작하시려면 아래 '시작하기' 버튼을 눌러 주세요.
-                """)
+                if not st.session_state["show_instructions"]:
+                    if st.button("➡️ NEXT"):
+                        st.session_state["show_instructions"] = True
+                        st.rerun()
+                else:
+                    st.markdown("---")
+                    st.markdown("### 📝 연구 안내")
+                    st.write("""
+                        이제부터 당신은 당신의 AITwinBot과 얘기하게 됩니다.
+                        이 챗봇은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며,
+                        대화를 통해 당신을 더 잘 반영해 나갑니다.
 
-                # 5. 주제에 따라 페이지 전환
-                if st.button("👉 시작하기"):
-                    if st.session_state["topic"] == "mental_health":
-                        st.switch_page("test")
-                    elif st.session_state["topic"] == "relationship_conflict":
-                        st.switch_page("dpl_rel_new")
+                        대화를 시작하시려면 아래 '시작하기' 버튼을 눌러 주세요.
+                    """)
+
+                    # 5. 주제에 따라 해당 챗봇 모듈 실행
+                    if st.button("👉 시작하기"):
+                        if st.session_state["topic"] == "mental_health":
+                            import dpl_mtl_new as app
+                        elif st.session_state["topic"] == "relationship_conflict":
+                            import dpl_rel_new as app
+                        app.run()
+
             else:
                 st.info("👆 위에서 먼저 주제를 선택해 주세요.")
 
