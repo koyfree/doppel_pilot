@@ -136,5 +136,5 @@ Profile:
 [Weekly Activities Overview]
 \t•\t{row['weekly_activities']}
 """.strip()
-
+    print(df.columns)
     return knowledge
