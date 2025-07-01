@@ -1,6 +1,6 @@
 # summarize_personality.py
 import streamlit as st
-import openai
+from openai import OpenAI
 
 def summarize_personality(personality_text: str, openai_api_key: str) -> str:
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
