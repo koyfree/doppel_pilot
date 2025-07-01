@@ -3,7 +3,7 @@
 import openai
 
 def summarize_personality(personality_text: str, openai_api_key: str) -> str:
-    openai.api_key = st.secrets["openai"]["api_key"]
+    openai_api_key = st.secrets["openai"]["api_key"]
 
     prompt = f"""
 You are a psychologist writing a brief personality evaluation for a client.
