@@ -20,6 +20,7 @@ with col2:
 
 # 3. 구글시트에서 knowledge 불러오기
 sheet_url = "https://docs.google.com/spreadsheets/d/1pQ9Wps-6sJH3EWgEgb4QdJJ_MItBBnSbTPbTKCWQhLI/edit?usp=sharing"
+openai_api_key = st.secrets["openai"]["api_key"]
 
 if user_name:
     try:
