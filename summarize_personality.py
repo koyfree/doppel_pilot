@@ -1,9 +1,7 @@
-# summarize_personality.py
-import streamlit as st
 from openai import OpenAI
 
 def summarize_personality(personality_text: str, openai_api_key: str) -> str:
-    client = OpenAI(api_key=st.secrets["openai"]["api_key"])
+    client = OpenAI(api_key=openai_api_key)
 
     prompt = f"""
 You are a psychologist writing a brief personality evaluation for a client.
@@ -22,7 +20,7 @@ Step2. Now write the same summary, but in natural everyday language for a genera
 Use casual tone and accessible vocabulary.
 """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4.1",
         messages=[
             {"role": "system", "content": "You are a helpful assistant that summarizes personality profiles."},
@@ -31,7 +29,4 @@ Use casual tone and accessible vocabulary.
         temperature=0.7,
     )
 
-    text = response['choices'][0]['message']['content'].strip()
-
-    # 그냥 원문 그대로 반환
-    return text
+    return response.choices[0].message.content.strip()
