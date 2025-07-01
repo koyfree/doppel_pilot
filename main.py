@@ -51,7 +51,7 @@ if user_name:
                 # 5. 주제에 따라 페이지 전환
                 if st.button("👉 시작하기"):
                     if st.session_state["topic"] == "mental_health":
-                        st.switch_page("dpl_mtl_new")
+                        st.switch_page("test")
                     elif st.session_state["topic"] == "relationship_conflict":
                         st.switch_page("dpl_rel_new")
             else:
