@@ -111,8 +111,15 @@ def run():
             st.session_state.phase = "suggestion_button"
             st.session_state.awaiting_user = False
         elif st.session_state.phase == "suggestion":
-            st.chat_message("assistant").markdown("📋 설문은 아래 링크에서 진행해 주세요!\n👉 [설문 링크](https://example.com)")
-            st.session_state.phase = "done"
+            st.chat_message("assistant").markdown(reply)
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+
+            # 설문 안내 메시지도 같이 출력
+            final_msg = "📋 설문은 아래 링크에서 진행해 주세요!\n👉 [설문 링크](https://example.com)"
+            st.chat_message("assistant").markdown(final_msg)
+            st.session_state.messages.append({"role": "assistant", "content": final_msg})
+
+    st.session_state.phase = "done"
 
         st.session_state.awaiting_response = False
         st.session_state.pending_user_input = None
