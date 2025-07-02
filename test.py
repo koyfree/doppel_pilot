@@ -27,11 +27,6 @@ def run():
         st.session_state.reflection_done = False
     if "suggestion_done" not in st.session_state:
         st.session_state.suggestion_done = False
-    if "knowledge_dict" not in st.session_state:
-        sheet_url = "https://docs.google.com/spreadsheets/d/1hXYw7YIAHufbIoCgjkH-UVoERWu8hh5LA_jc0O0sCd4/edit?usp=sharing"
-        st.session_state.knowledge_dict = build_knowledge_dict(sheet_url)
-    if "name" not in st.session_state:
-        st.session_state.name = list(st.session_state.knowledge_dict.keys())[0]  # 기본값
 
     name = st.session_state.name
     knowledge = st.session_state.knowledge_dict[name]
