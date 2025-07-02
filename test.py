@@ -40,8 +40,17 @@ def run():
             st.session_state.intro_index += 1
             st.rerun()
         else:
-            # 근황 묻기
-            prompt = "요즘 마음이 조금 힘들었던 적 있어?"
+            # 근황 묻기 (GPT가 생성)
+            response = client.chat.completions.create(
+                model="gpt-4.1",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    *st.session_state.messages,
+                    {"role": "user", "content": "지금 첫 질문을 해줘."}
+                ],
+                temperature=0.7,
+            )
+            prompt = response.choices[0].message.content.strip()
             st.chat_message("assistant").markdown(prompt)
             st.session_state.messages.append({"role": "assistant", "content": prompt})
             st.session_state.phase = "prompt1"
@@ -61,17 +70,15 @@ def run():
 
         phase = st.session_state.phase
 
-        if phase == "prompt1":
-            q = "Could you tell me a bit more about what happened? Was there a specific event that triggered these feelings, or has it just been more of a general mood?"
-            st.session_state.phase = "followup1"
-
-        elif phase == "followup1":
-            q = "Have you felt this way before, at any other point in your life?"
-            st.session_state.phase = "followup2"
-
-        elif phase == "followup2":
-            q = "Around the time these feelings started, do you remember anything in your daily life that changed, even slightly?"
-            st.session_state.phase = "reflection"
+        if phase in ["prompt1", "followup1", "followup2"]:
+            # 꼬리 질문도 GPT가 생성
+            response = client.chat.completions.create(
+                model="gpt-4.1",
+                messages=[{"role": "system", "content": system_prompt}] + st.session_state.messages,
+                temperature=0.7,
+            )
+            q = response.choices[0].message.content.strip()
+            st.session_state.phase = "followup1" if phase == "prompt1" else ("followup2" if phase == "followup1" else "reflection")
 
         elif phase == "reflection":
             response = client.chat.completions.create(
@@ -79,8 +86,7 @@ def run():
                 messages=[{"role": "system", "content": system_prompt}] + st.session_state.messages,
                 temperature=0.7,
             )
-            reply = response.choices[0].message.content.strip()
-            q = reply
+            q = response.choices[0].message.content.strip()
             st.session_state.phase = "insight_button"
 
         elif phase == "insight_button":
@@ -100,8 +106,7 @@ def run():
                 messages=[{"role": "system", "content": system_prompt}] + st.session_state.messages,
                 temperature=0.7,
             )
-            reply = response.choices[0].message.content.strip()
-            q = reply
+            q = response.choices[0].message.content.strip()
             st.session_state.phase = "suggestion_button"
 
         elif phase == "suggestion_button":
