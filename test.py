@@ -34,23 +34,23 @@ def run():
     # 1. 인트로 단계: 자동 출력
     # -------------------
     if st.session_state.phase == "intro":
-        step = st.session_state.intro_step
+        step = st.session_state.get("intro_step", 0)
 
-    for i in range(min(step + 1, len(intro_messages))):
-        with st.chat_message("assistant"):
-            st.markdown(intro_messages[i])
+        for i in range(min(step + 1, len(intro_messages))):
+            with st.chat_message("assistant"):
+                st.markdown(intro_messages[i])
 
-    if step < len(intro_messages):
-        time.sleep(0.6)
-        st.session_state.intro_step += 1
-        st.rerun()
-    else:
-        system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
-        st.session_state.messages.append({"role": "system", "content": system_prompt})
-        st.session_state.phase = "prompting"
-        st.rerun()
+        if step < len(intro_messages):
+            time.sleep(0.6)
+            st.session_state.intro_step += 1
+            st.rerun()
+        else:
+            system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
+            st.session_state.messages.append({"role": "system", "content": system_prompt})
+            st.session_state.phase = "prompting"
+            st.rerun()
 
-    st.stop()
+        st.stop()
 
 
     # -------------------
