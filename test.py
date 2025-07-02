@@ -103,9 +103,7 @@ def run():
             st.session_state.awaiting_user = True
         elif st.session_state.phase == "followup3":
             st.session_state.phase = "reflection"
-            st.session_state.awaiting_user = False
-            st.session_state.awaiting_response = True  # trigger GPT for reflection immediately
-            st.rerun()
+            st.session_state.awaiting_user = True
         elif st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
