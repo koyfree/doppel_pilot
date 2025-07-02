@@ -59,7 +59,7 @@ if user_name:
                     # 5. 주제에 따라 해당 챗봇 모듈 실행
                     if st.button("👉 시작하기"):
                         if st.session_state["topic"] == "mental_health":
-                            import dpl_mtl_new as app
+                            import test as app
                         elif st.session_state["topic"] == "relationship_conflict":
                             import dpl_rel_new as app
                         app.run()
