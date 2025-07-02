@@ -1,88 +1,154 @@
+# test.py
 import streamlit as st
-import openai
+from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
-from knowledge_dict import build_knowledge_dict
-
-# GPT 호출 함수
-def call_gpt(messages, system_prompt):
-    response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "system", "content": system_prompt}] + messages
-    )
-    return response.choices[0].message.content.strip()
 
 def run():
-    st.set_page_config(page_title="Doppelgänger Chatbot", layout="centered")
+    st.title("🧠 AITwinBot 대화 세션")
 
-    # ✅ 상태 초기화
+    # OpenAI API 준비
+    client = OpenAI(api_key=st.secrets["openai"]["api_key"])
+
+    # 세션 상태 초기화
     if "messages" not in st.session_state:
         st.session_state.messages = []
-    if "intro_done" not in st.session_state:
-        st.session_state.intro_done = False
-    if "first_question_done" not in st.session_state:
-        st.session_state.first_question_done = False
-    if "followup_count" not in st.session_state:
-        st.session_state.followup_count = 0
-    if "reflection_done" not in st.session_state:
-        st.session_state.reflection_done = False
-    if "suggestion_done" not in st.session_state:
-        st.session_state.suggestion_done = False
+        st.session_state.phase = "intro"
+        st.session_state.awaiting_user = False
+        st.session_state.intro_index = 0
+        st.session_state.user_inputs = []
 
-    name = st.session_state.name
-    knowledge = st.session_state.knowledge_dict[name]
-    system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
+    # 프로필 정보 불러오기
+    profile = st.session_state["profile"]
+    system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", profile)
 
-    # ✅ 인트로 메시지 출력
+    # 메시지 출력
+    for msg in st.session_state.messages:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    # 인트로 메시지 4개 순차 출력
     intro_messages = [
-        f"안녕 {name}! 나는 너의 데이터를 기반으로 만들어진 AITwinBot이야.",
-        "만나서 반가워!",
-        "본격적으로 시작하기 전에, 우리 대화가 어떻게 이루어질지 알려줄게.",
-        "내가 너한테 어떤 주제에 대한 몇 가지 질문을 할 거야. 그리고 나서 내 생각을 3번에 걸쳐 얘기해줄게. 그럼 시작할게!"
+        "Hi! I'm your doppelgänger chatbot created based on your data. Nice to meet you!",
+        "Before we officially begin, let me explain how our conversation will go.",
+        "I'm going to ask you a few questions on a certain topic. Based on your answers, I'll show you 'my thoughts on your answers' in three parts. You can read each part and evaluate it right away.",
+        "Okay, let's get started!"
     ]
 
-    if not st.session_state.intro_done:
-        for msg in intro_messages:
-            with st.chat_message("assistant"):
-                st.markdown(f"<div style='color: gray;'>{msg}</div>", unsafe_allow_html=True)
-        st.session_state.intro_done = True
-
-    # ✅ 첫 질문 출력
-    if st.session_state.intro_done and not st.session_state.first_question_done:
-        first_question = call_gpt(st.session_state.messages, system_prompt)
-        st.session_state.messages.append({"role": "assistant", "content": first_question})
-        with st.chat_message("assistant"):
-            st.markdown(first_question)
-        st.session_state.first_question_done = True
-
-    # ✅ 사용자 입력창 항상 표시
-    user_input = st.chat_input("메시지를 입력해주세요")
-
-    if user_input:
-        # 사용자 발화 저장 및 출력
-        st.session_state.messages.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
-            st.markdown(user_input)
-
-        # follow-up 질문 3개 → 공감 → 성찰 → 제안
-        if st.session_state.followup_count < 3:
-            reply = call_gpt(st.session_state.messages, system_prompt)
-            st.session_state.messages.append({"role": "assistant", "content": reply})
-            with st.chat_message("assistant"):
-                st.markdown(reply)
-            st.session_state.followup_count += 1
-
-        elif not st.session_state.reflection_done:
-            with st.chat_message("assistant"):
-                st.markdown("당신 이야기를 듣고 나니까 이런 감정이 느껴졌어. 고마워.")
-            st.session_state.messages.append({"role": "assistant", "content": "당신 이야기를 듣고 나니까 이런 감정이 느껴졌어. 고마워."})
-            st.session_state.reflection_done = True
-
-        elif not st.session_state.suggestion_done:
-            with st.chat_message("assistant"):
-                st.markdown("혹시 내가 생각하는 방향을 한 번 들어볼래?")
-            st.session_state.messages.append({"role": "assistant", "content": "혹시 내가 생각하는 방향을 한 번 들어볼래?"})
-            st.session_state.suggestion_done = True
-
+    if st.session_state.phase == "intro":
+        if st.session_state.intro_index < len(intro_messages):
+            msg = intro_messages[st.session_state.intro_index]
+            st.chat_message("assistant").markdown(msg)
+            st.session_state.messages.append({"role": "assistant", "content": msg})
+            st.session_state.intro_index += 1
+            st.rerun()
         else:
-            with st.chat_message("assistant"):
-                st.markdown("고마워. 여기서 대화를 마무리할게. 아래 설문에 참여해줘!")
+            # GPT로 근황 묻기
+            prompt = "요즘 마음이 조금 힘들었던 적 있어?"  # Step 1에 해당
+            st.chat_message("assistant").markdown(prompt)
+            st.session_state.messages.append({"role": "assistant", "content": prompt})
+            st.session_state.phase = "prompt1"
+            st.session_state.awaiting_user = True
+            st.stop()
+
+    # 사용자 입력 처리
+    user_input = st.chat_input("메시지를 입력해 주세요.")
+    if user_input and st.session_state.awaiting_user:
+        st.chat_message("user").markdown(user_input)
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        st.session_state.user_inputs.append(user_input)
+        st.session_state.awaiting_user = False
+
+        # 다음 단계 로직
+        phase = st.session_state.phase
+
+        if phase == "prompt1":
+            next_question = "Could you tell me a bit more about what happened? Was there a specific event that triggered these feelings, or has it just been more of a general mood?"
+            st.session_state.messages.append({"role": "assistant", "content": next_question})
+            st.chat_message("assistant").markdown(next_question)
+            st.session_state.phase = "followup1"
+            st.session_state.awaiting_user = True
+            st.stop()
+
+        elif phase == "followup1":
+            next_question = "Have you felt this way before, at any other point in your life?"
+            st.session_state.messages.append({"role": "assistant", "content": next_question})
+            st.chat_message("assistant").markdown(next_question)
+            st.session_state.phase = "followup2"
+            st.session_state.awaiting_user = True
+            st.stop()
+
+        elif phase == "followup2":
+            next_question = "Around the time these feelings started, do you remember anything in your daily life that changed, even slightly?"
+            st.session_state.messages.append({"role": "assistant", "content": next_question})
+            st.chat_message("assistant").markdown(next_question)
+            st.session_state.phase = "reflection"
+            st.session_state.awaiting_user = True
+            st.stop()
+
+        elif phase == "reflection":
+            # GPT 응답: 공감
+            response = client.chat.completions.create(
+                model="gpt-4.1",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    *st.session_state.messages,
+                ],
+                temperature=0.7,
+            )
+            reply = response.choices[0].message.content.strip()
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+            st.chat_message("assistant").markdown(reply)
+            st.session_state.phase = "insight_button"
+            st.stop()
+
+        elif phase == "insight_button":
+            if user_input.lower() in ["yes", "응", "말해줘", "좋아"]:
+                st.session_state.phase = "insight"
+                st.rerun()
+            else:
+                st.chat_message("assistant").markdown("혹시 더 듣고 싶으면 'YES'라고 해줘!")
+                st.stop()
+
+        elif phase == "insight":
+            # GPT 응답: 성찰
+            response = client.chat.completions.create(
+                model="gpt-4.1",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    *st.session_state.messages,
+                ],
+                temperature=0.7,
+            )
+            reply = response.choices[0].message.content.strip()
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+            st.chat_message("assistant").markdown(reply)
+            st.session_state.phase = "suggestion_button"
+            st.stop()
+
+        elif phase == "suggestion_button":
+            if user_input.lower() in ["yes", "응", "말해줘", "좋아"]:
+                st.session_state.phase = "suggestion"
+                st.rerun()
+            else:
+                st.chat_message("assistant").markdown("그럼, 듣고 싶어지면 알려줘!")
+                st.stop()
+
+        elif phase == "suggestion":
+            # GPT 응답: 제안
+            response = client.chat.completions.create(
+                model="gpt-4.1",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    *st.session_state.messages,
+                ],
+                temperature=0.7,
+            )
+            reply = response.choices[0].message.content.strip()
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+            st.chat_message("assistant").markdown(reply)
+
+            # 마지막 안내
+            st.chat_message("assistant").markdown("📋 설문은 아래 링크에서 진행해 주세요!\n👉 [설문 링크](https://example.com)")
+            st.session_state.phase = "done"
+            st.stop()
+
