@@ -32,18 +32,18 @@ def run():
     ]
 
     if st.session_state.phase == "intro":
-        if st.session_state.intro_step < len(intro_messages):
-            if len(st.session_state.chat_history) <= st.session_state.intro_step:
-                st.session_state.chat_history.append(("🤖", intro_messages[st.session_state.intro_step]))
-                time.sleep(0.3)
+        intro_step = st.session_state.intro_step
+        if intro_step < len(intro_messages):
+            for i in range(intro_step + 1):  # 지금까지의 메시지 표시
+                st.markdown(f"**🤖** {intro_messages[i]}")
+            if st.button("계속"):
                 st.session_state.intro_step += 1
-                st.rerun()
             st.stop()
-        else:
-            system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
-            st.session_state.messages.append({"role": "system", "content": system_prompt})
-            st.session_state.phase = "prompting"
-            st.rerun()
+    else:
+        system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
+        st.session_state.messages.append({"role": "system", "content": system_prompt})
+        st.session_state.phase = "prompting"
+        st.rerun()
 
     # 2. 이전 대화 표시
     for speaker, msg in st.session_state.chat_history:
