@@ -119,7 +119,7 @@ def run():
             st.chat_message("assistant").markdown(final_msg)
             st.session_state.messages.append({"role": "assistant", "content": final_msg})
 
-    st.session_state.phase = "done"
+            st.session_state.phase = "done"
 
         st.session_state.awaiting_response = False
         st.session_state.pending_user_input = None
