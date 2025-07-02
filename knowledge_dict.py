@@ -85,7 +85,7 @@ def verbalize(score, pos_label, neg_label):
     else:
         return f"extremely un{pos_label}" if " " not in pos_label else f"extremely {neg_label}"
 
-def build_knowledge_dict(sheet_url: str) -> dict:
+def build_knowledge_dict(sheet_url: str, openai_api_key: str) -> dict:
     if "edit" in sheet_url:
         sheet_url = sheet_url.replace("/edit?", "/export?format=csv&")
 
