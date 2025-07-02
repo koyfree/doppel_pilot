@@ -36,22 +36,22 @@ def run():
     if st.session_state.phase == "intro":
         step = st.session_state.intro_step
 
-        for i in range(step + 1):
-            with st.chat_message("assistant"):
-                st.markdown(intro_messages[i])
+    for i in range(min(step + 1, len(intro_messages))):
+        with st.chat_message("assistant"):
+            st.markdown(intro_messages[i])
 
-        if step < len(intro_messages):
-            time.sleep(0.6)
-            st.session_state.intro_step += 1
-            st.rerun()
-        else:
-            # 인트로 끝났으면 → 시스템 프롬프트 넣고 바로 GPT 응답 시작
-            system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
-            st.session_state.messages.append({"role": "system", "content": system_prompt})
-            st.session_state.phase = "prompting"
-            st.rerun()
+    if step < len(intro_messages):
+        time.sleep(0.6)
+        st.session_state.intro_step += 1
+        st.rerun()
+    else:
+        system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
+        st.session_state.messages.append({"role": "system", "content": system_prompt})
+        st.session_state.phase = "prompting"
+        st.rerun()
 
-        st.stop()
+    st.stop()
+
 
     # -------------------
     # 2. 이전 대화 출력
