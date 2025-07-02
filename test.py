@@ -47,7 +47,7 @@ def run():
             st.session_state.awaiting_response = True
             st.rerun()
 
-    # YES 버튼 처리 (공감 후 or 성찰 후)
+    # YES 버튼 처리
     if st.session_state.phase in ["insight_button", "suggestion_button"]:
         if st.button("✅ YES"):
             st.session_state.messages.append({"role": "user", "content": "YES"})
@@ -62,12 +62,12 @@ def run():
                 st.session_state.phase = "suggestion"
             st.rerun()
 
-    # 사용자 입력 받는 경우
+    # 사용자 입력 가능 단계
     allow_input = st.session_state.phase in [
         "prompt1", "followup1", "followup2", "followup3"
     ]
     user_input = None
-    if allow_input:
+    if allow_input and not st.session_state.awaiting_response:
         user_input = st.chat_input("메시지를 입력해 주세요.")
 
     if user_input and not st.session_state.awaiting_response:
@@ -91,7 +91,7 @@ def run():
             st.chat_message("assistant").markdown(reply)
             st.session_state.messages.append({"role": "assistant", "content": reply})
 
-        # phase 전환 로직
+        # phase 전환
         if st.session_state.phase == "prompt1":
             st.session_state.phase = "followup1"
             st.session_state.awaiting_user = True
@@ -103,7 +103,9 @@ def run():
             st.session_state.awaiting_user = True
         elif st.session_state.phase == "followup3":
             st.session_state.phase = "reflection"
-            st.session_state.awaiting_user = True
+            st.session_state.awaiting_user = False
+            st.session_state.awaiting_response = True  # trigger GPT for reflection immediately
+            st.rerun()
         elif st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
