@@ -33,17 +33,17 @@ def run():
 
     if st.session_state.phase == "intro":
         if st.session_state.intro_step < len(intro_messages):
-            st.session_state.chat_history.append(("🤖", intro_messages[st.session_state.intro_step]))
-            st.session_state.intro_step += 1
-            time.sleep(0.3)
-            st.rerun()
+            if len(st.session_state.chat_history) <= st.session_state.intro_step:
+                st.session_state.chat_history.append(("🤖", intro_messages[st.session_state.intro_step]))
+                time.sleep(0.3)
+                st.session_state.intro_step += 1
+                st.rerun()
+            st.stop()
         else:
-            # 인사가 끝나면 system prompt 삽입 + 첫 프롬프트 시작
             system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
             st.session_state.messages.append({"role": "system", "content": system_prompt})
             st.session_state.phase = "prompting"
             st.rerun()
-        st.stop()
 
     # 2. 이전 대화 표시
     for speaker, msg in st.session_state.chat_history:
