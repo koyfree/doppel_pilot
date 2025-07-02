@@ -1,7 +1,7 @@
 import streamlit as st
-from openai import OpenAI
 import time
-from prompts import SYSTEM_PROMPT_MTL  # knowledge 기반 prompt
+from openai import OpenAI
+from prompts import SYSTEM_PROMPT_MTL  # {knowledge} 포함되어 있어야 함
 
 def run():
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
@@ -22,7 +22,7 @@ def run():
 
     st.title("🧠 AITwinBot – 맞춤형 심리 대화")
 
-    # 인트로 메시지
+    # 인트로 메시지 리스트
     intro_messages = [
         f"안녕 {name}! 나는 너의 데이터를 기반으로 만들어진 AITwinBot이야.",
         "만나서 반가워!",
@@ -31,28 +31,30 @@ def run():
     ]
 
     # -------------------
-    # 1. 인트로 단계
+    # 1. 인트로 단계: 자동 출력
     # -------------------
     if st.session_state.phase == "intro":
         step = st.session_state.intro_step
+
         for i in range(step + 1):
             with st.chat_message("assistant"):
                 st.markdown(intro_messages[i])
 
-        if step < len(intro_messages) - 1:
-            if st.button("계속"):
-                st.session_state.intro_step += 1
-                st.rerun()
-            st.stop()
+        if step < len(intro_messages):
+            time.sleep(0.6)
+            st.session_state.intro_step += 1
+            st.rerun()
         else:
-            # 인트로 완료 → system prompt 삽입
+            # 인트로 끝났으면 → 시스템 프롬프트 넣고 바로 GPT 응답 시작
             system_prompt = SYSTEM_PROMPT_MTL.format(knowledge=knowledge)
             st.session_state.messages.append({"role": "system", "content": system_prompt})
             st.session_state.phase = "prompting"
             st.rerun()
 
+        st.stop()
+
     # -------------------
-    # 2. 이전 메시지 출력
+    # 2. 이전 대화 출력
     # -------------------
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
@@ -103,10 +105,10 @@ def run():
                 st.session_state.phase = "suggestion"
                 st.session_state.awaiting_button = True
             elif st.session_state.phase == "suggestion":
-                # 마지막 설문 안내
                 with st.chat_message("assistant"):
                     st.markdown("지금까지 고마워요. 아래 링크로 가서 설문을 완료해 주세요! 👉 [설문하러 가기](https://your-survey-link.com)")
                 st.session_state.phase = "end"
+
             st.stop()
 
     # -------------------
