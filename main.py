@@ -2,7 +2,7 @@ import streamlit as st
 from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
-
+<br><br><br>
 # 단계 상태 초기화
 if "step" not in st.session_state:
     st.session_state["step"] = "start"
