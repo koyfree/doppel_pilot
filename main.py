@@ -14,7 +14,7 @@ st.markdown("""
     font-size: 16px;
     font-weight: 400;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    height: 200px;
+    height: 180px;
     box-sizing: border-box;
     transition: border 0.2s ease;
     margin-bottom: 10px;
@@ -58,6 +58,7 @@ if st.session_state["step"] == "start":
                 st.session_state["user_name"] = user_name
                 st.session_state["profile"] = knowledge[user_name]
 
+                st.markdown("")
                 st.markdown("")
                 st.markdown("### 대화 주제를 선택해 주세요.")
 
