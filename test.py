@@ -28,7 +28,7 @@ def run():
     # 시스템 프롬프트
     system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
 
-    # 인트로
+    # 인트로 메시지
     intro_messages = [
         "Hi! I'm your doppelgänger chatbot created based on your data. Nice to meet you!",
         "Before we officially begin, let me explain how our conversation will go.",
@@ -36,6 +36,7 @@ def run():
         "Okay, let's get started!"
     ]
 
+    # 인트로 단계 처리
     if st.session_state.phase == "intro":
         if st.session_state.intro_index < len(intro_messages):
             msg = intro_messages[st.session_state.intro_index]
@@ -62,26 +63,31 @@ def run():
                 st.session_state.phase = "suggestion"
             st.rerun()
 
-    # 사용자 입력 처리
-    allow_input = st.session_state.phase in ["prompt1", "followup1", "followup2", "followup3", "after_followup3"]
+    # 사용자 입력 허용 여부
+    allow_input = st.session_state.phase in ["prompt1", "followup1", "followup2", "followup3"]
     user_input = None
     if allow_input and not st.session_state.awaiting_response:
         user_input = st.chat_input("메시지를 입력해 주세요.")
 
+    # 사용자 입력 처리 및 phase 전환
     if user_input and not st.session_state.awaiting_response:
         st.chat_message("user").markdown(user_input)
         st.session_state.messages.append({"role": "user", "content": user_input})
         st.session_state.user_inputs.append(user_input)
         st.session_state.pending_user_input = user_input
 
-        # followup3일 경우 → reflection으로 전환
-        if st.session_state.phase == "followup3":
-            st.session_state.phase = "after_followup3"
-            st.session_state.awaiting_response = True
-            st.session_state.awaiting_user = True
-        else:
-            st.session_state.awaiting_response = True
-            st.session_state.awaiting_user = False
+        # 🔽 사용자 입력 시 phase 전환
+        if st.session_state.phase == "prompt1":
+            st.session_state.phase = "followup1"
+        elif st.session_state.phase == "followup1":
+            st.session_state.phase = "followup2"
+        elif st.session_state.phase == "followup2":
+            st.session_state.phase = "followup3"
+        elif st.session_state.phase == "followup3":
+            st.session_state.phase = "reflection"
+
+        st.session_state.awaiting_response = True
+        st.session_state.awaiting_user = False
         st.rerun()
 
     # GPT 응답 처리
@@ -97,21 +103,8 @@ def run():
         st.chat_message("assistant").markdown(reply)
         st.session_state.messages.append({"role": "assistant", "content": reply})
 
-        # 단계 전환
-        if st.session_state.phase == "prompt1":
-            st.session_state.phase = "followup1"
-            st.session_state.awaiting_user = True
-        elif st.session_state.phase == "followup1":
-            st.session_state.phase = "followup2"
-            st.session_state.awaiting_user = True
-        elif st.session_state.phase == "followup2":
-            st.session_state.phase = "followup3"
-            st.session_state.awaiting_user = True
-            st.session_state.awaiting_response = False  # GPT 응답 끝났고, 사용자 입력 기다림
-        elif st.session_state.phase == "after_followup3":
-            st.session_state.phase == "reflection"
-            st.session_state.awating_user = False
-        elif st.session_state.phase == "reflection":
+        # 단계 전환: 사용자 입력 이후 다음 단계는 이미 위에서 처리됨
+        if st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
         elif st.session_state.phase == "insight":
