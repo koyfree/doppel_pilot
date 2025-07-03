@@ -63,7 +63,7 @@ def run():
             st.rerun()
 
     # 사용자 입력 처리
-    allow_input = st.session_state.phase in ["prompt1", "followup1", "followup2", "followup3"]
+    allow_input = st.session_state.phase in ["prompt1", "followup1", "followup2", "followup3", "after_followup3"]
     user_input = None
     if allow_input and not st.session_state.awaiting_response:
         user_input = st.chat_input("메시지를 입력해 주세요.")
@@ -78,7 +78,7 @@ def run():
         if st.session_state.phase == "followup3":
             st.session_state.phase = "after_followup3"
             st.session_state.awaiting_response = True
-            st.session_state.awaiting_user = False
+            st.session_state.awaiting_user = True
         else:
             st.session_state.awaiting_response = True
             st.session_state.awaiting_user = False
