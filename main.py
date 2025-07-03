@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
