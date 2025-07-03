@@ -88,8 +88,13 @@ if st.session_state["step"] == "start":
                     if isinstance(topic, list):  # 리스트일 수 있음
                         topic = topic[0]
                     st.session_state["topic"] = topic
-                    st.session_state["step"] = "instructions"
-                    st.rerun()
+
+                    label = '정신 건강' if topic == 'mental_health' else '관계 갈등'
+                    st.success(f"선택된 주제: {label}")
+
+                    if st.button("➡️ NEXT"):
+                        st.session_state["step"] = "instructions"
+                        st.rerun()
 
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
