@@ -26,6 +26,11 @@ st.markdown("""
     transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
     border: 4px solid transparent;
     box-sizing: border-box;
+    cursor: pointer;
+}
+.topic-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
 }
 .topic-card.selected {
     border: 4px solid #f63366;
@@ -35,11 +40,6 @@ st.markdown("""
     font-weight: bold;
     margin-bottom: 12px;
     color: white;
-}
-.center-radio {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
 }
 button {
     border-radius: 8px !important;
@@ -79,43 +79,43 @@ if st.session_state["step"] == "start":
                     "관계갈등": "relationship_conflict"
                 }
 
-                selected_label = st.radio(
-                    "원하는 주제를 선택해 주세요.",
-                    list(topic_options.keys()),
-                    horizontal=True,
-                    index=None,
-                    label_visibility="collapsed",
-                    key="radio_selection"
-                )
-
-                if selected_label:
-                    st.session_state["topic"] = topic_options[selected_label]
+                # 쿼리 파라미터 감지
+                query_params = st.experimental_get_query_params()
+                selected_topic = query_params.get("topic", [None])[0]
+                if selected_topic in topic_options.values():
+                    st.session_state["topic"] = selected_topic
 
                 selected_topic = st.session_state.get("topic", "")
 
-                st.markdown('<div class="card-container">', unsafe_allow_html=True)
+                # 카드 클릭시 쿼리 파라미터 변경 JS 삽입
+                cards_html = '<div class="card-container">'
 
                 for label, key in topic_options.items():
                     selected = "selected" if selected_topic == key else ""
                     card_text = {
-                        "정신건강": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  최근에 겪고 있는 스트레스나 감정적으로  힘든 일들에 대해 대화하게 됩니다.",
-                        "관계갈등": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  최근에 있었던 인간관계 문제나  마음이 불편했던 상황들에 대해 대화하게 됩니다."
+                        "정신건강": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.",
+                        "관계갈등": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
                     }[label]
-                    st.markdown(f"""
-                    <div class="topic-card {selected}">
-                        <div>
-                            <div class="topic-title">{label}</div>
-                            {card_text}
+                    cards_html += f"""
+                        <div class="topic-card {selected}" onclick="window.location.href='?topic={key}'">
+                            <div>
+                                <div class="topic-title">{label}</div>
+                                {card_text}
+                            </div>
                         </div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    """
+                cards_html += '</div>'
 
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown(cards_html, unsafe_allow_html=True)
 
-                if selected_label:
+                if selected_topic:
+                    reverse_lookup = {v: k for k, v in topic_options.items()}
+                    selected_label = reverse_lookup[selected_topic]
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
+                        # URL 파라미터 제거
+                        st.experimental_set_query_params()
                         st.rerun()
 
         except Exception as e:
