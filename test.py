@@ -7,7 +7,7 @@ st.markdown("""
 <style>
 /* 말풍선 간 간격 줄이기 */
 div.stChatMessage {
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.3rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -44,14 +44,13 @@ def run():
 
     # 인트로 단계 처리
     if st.session_state.phase == "intro":
-        if st.session_state.intro_index < len(intro_messages):
-            msg = intro_messages[st.session_state.intro_index]
-            if len(st.session_state.messages) == st.session_state.intro_index:
-                st.chat_message("assistant").markdown(msg)
-                st.session_state.messages.append({"role": "assistant", "content": msg})
-                time.sleep(0.5)  # 💡 잠깐 멈춰서 사용자에게 보여지도록 함
-                st.session_state.intro_index += 1
-                st.rerun()
+        if st.session_state.intro_index == 0:
+            full_intro = "\n\n".join(intro_messages)
+            st.chat_message("assistant").markdown(full_intro)
+            st.session_state.messages.append({"role": "assistant", "content": full_intro})
+            st.session_state.intro_index = len(intro_messages)  # 전부 출력 완료 처리
+            time.sleep(0.5)
+            st.rerun()
         else:
             st.session_state.phase = "prompt1"
             st.session_state.awaiting_response = True
