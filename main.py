@@ -89,22 +89,26 @@ if st.session_state["step"] == "start":
 
                 # 카드 HTML 생성
                 cards_html = '<div class="card-container">'
+
                 for label, key in topic_options.items():
                     selected = "selected" if selected_topic == key else ""
                     card_text = {
                         "정신건강": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.",
                         "관계갈등": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
                     }[label]
-
-                    cards_html += f'''
-                        <div class="topic-card {selected}" onclick="window.location.href='?topic={key}'">
-                            <div>
-                                <div class="topic-title">{label}</div>
-                                {card_text}
-                            </div>
-                        </div>
-                    '''
+                
+                    cards_html += (
+                        f'<div class="topic-card {selected}" onclick="window.location.href=\'?topic={key}\'">'
+                        f'<div>'
+                        f'<div class="topic-title">{label}</div>'
+                        f'{card_text}'
+                        f'</div>'
+                        f'</div>'
+                    )
+                
                 cards_html += '</div>'
+                
+                st.markdown(cards_html, unsafe_allow_html=True)
 
                 # 출력
                 st.markdown(cards_html, unsafe_allow_html=True)
