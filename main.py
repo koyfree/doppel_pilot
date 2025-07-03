@@ -3,7 +3,7 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-# CSS 스타일 설정
+# 스타일 정의
 st.markdown("""
 <style>
 .card-container {
@@ -79,43 +79,44 @@ if st.session_state["step"] == "start":
                     "관계갈등": "relationship_conflict"
                 }
 
-                # 쿼리 파라미터 감지
-                query_params = st.experimental_get_query_params()
-                selected_topic = query_params.get("topic", [None])[0]
+                # 최신 쿼리 파라미터 API 사용
+                query_params = st.query_params
+                selected_topic = query_params.get("topic", [None])[0] if "topic" in query_params else None
                 if selected_topic in topic_options.values():
                     st.session_state["topic"] = selected_topic
 
                 selected_topic = st.session_state.get("topic", "")
 
-                # 카드 클릭시 쿼리 파라미터 변경 JS 삽입
+                # 카드 HTML 생성
                 cards_html = '<div class="card-container">'
-
                 for label, key in topic_options.items():
                     selected = "selected" if selected_topic == key else ""
                     card_text = {
                         "정신건강": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.",
                         "관계갈등": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
                     }[label]
-                    cards_html += f"""
+
+                    cards_html += f'''
                         <div class="topic-card {selected}" onclick="window.location.href='?topic={key}'">
                             <div>
                                 <div class="topic-title">{label}</div>
                                 {card_text}
                             </div>
                         </div>
-                    """
+                    '''
                 cards_html += '</div>'
 
+                # 출력
                 st.markdown(cards_html, unsafe_allow_html=True)
 
+                # 선택된 주제 있을 경우 NEXT 버튼 활성화
                 if selected_topic:
                     reverse_lookup = {v: k for k, v in topic_options.items()}
                     selected_label = reverse_lookup[selected_topic]
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
-                        # URL 파라미터 제거
-                        st.experimental_set_query_params()
+                        st.query_params.clear()  # 파라미터 제거
                         st.rerun()
 
         except Exception as e:
