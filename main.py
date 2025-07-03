@@ -111,7 +111,6 @@ if st.session_state["step"] == "start":
                 st.markdown(cards_html, unsafe_allow_html=True)
 
                 # NEXT 버튼 노출
-                selected_topic = st.session_state.get("topic", "")
                 reverse_lookup = {v: k for k, v in topic_options.items()}
                 selected_label = reverse_lookup.get(selected_topic)
                 
