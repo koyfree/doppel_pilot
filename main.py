@@ -1,30 +1,79 @@
 import streamlit as st
-import time
 from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-# 단계 상태 초기화
+st.markdown(
+    """
+    <style>
+    .card {
+        background-color: #0f4c75;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+        height: 250px;
+    }
+    .card:hover {
+        background-color: #3282b8;
+    }
+    .card-title {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+    .card-desc {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# 단계 1: ID 입력 및 주제 선택
 if "step" not in st.session_state:
     st.session_state["step"] = "start"
 
-# 단계 1: ID 입력 및 주제 선택
 if st.session_state["step"] == "start":
     st.title("🧠 AITwinBot 실험 연구")
-    st.markdown("<br>", unsafe_allow_html=True)
-    # 1. 사용자 ID 입력
-    user_name = st.text_input("설문 초반에 입력하신 ID를 동일하게 기입해 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요:)")
+    st.markdown("설문 초반에 입력하신 ID를 동일하게 기입해 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요:)")
 
-    # 2. 주제 선택
-    st.markdown("<br>", unsafe_allow_html=True)
+    user_name = st.text_input("", key="user_input_name")
+
     st.markdown("#### 대화 주제를 선택해 주세요.")
     col1, col2 = st.columns(2)
+
     with col1:
-        if st.button("🧘 정신 건강"):
+        if st.button(" ", key="mental_card"):
             st.session_state["topic"] = "mental_health"
+        st.markdown(
+            """
+            <div class="card" onclick="document.querySelector('[data-testid=stButton]').click()">
+                <div class="card-title">정신건강</div>
+                <div class="card-desc">
+                    이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.
+                </div>
+            </div>
+            """, unsafe_allow_html=True
+        )
+
     with col2:
-        if st.button("🤝 관계 갈등"):
+        if st.button(" ", key="rel_card"):
             st.session_state["topic"] = "relationship_conflict"
+        st.markdown(
+            """
+            <div class="card" onclick="document.querySelector('[data-testid=stButton]').click()">
+                <div class="card-title">관계갈등</div>
+                <div class="card-desc">
+                    이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다.
+                </div>
+            </div>
+            """, unsafe_allow_html=True
+        )
+
 
     # 3. ID 확인 및 NEXT 버튼
     if user_name:
