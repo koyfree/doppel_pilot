@@ -29,6 +29,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# 상태 초기화
 if "step" not in st.session_state:
     st.session_state["step"] = "start"
 
@@ -65,11 +66,17 @@ if st.session_state["step"] == "start":
                     }
                 }
 
-                # 라디오 버튼에서 선택값 불러오기
-                selected_label = st.session_state.get("selected_label", None)
+                # 라디오 선택 UI (하나의 컴포넌트로 통일)
+                selected_label = st.radio(
+                    label="",
+                    options=list(topic_options.keys()),
+                    horizontal=True,
+                    index=None,
+                    key="radio_topic"
+                )
 
+                # 카드 UI
                 col1, col2 = st.columns(2)
-
                 with col1:
                     selected = "selected" if selected_label == "정신건강" else ""
                     st.markdown(f"""
@@ -78,13 +85,6 @@ if st.session_state["step"] == "start":
                             <div>{topic_options['정신건강']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
-
-                    # 가운데 정렬을 위해 3등분
-                    r1, r2, r3 = st.columns([1, 2, 1])
-                    with r2:
-                        if st.radio(" ", ["정신건강"], key="radio_mental", label_visibility="collapsed") == "정신건강":
-                            st.session_state["selected_label"] = "정신건강"
-
                 with col2:
                     selected = "selected" if selected_label == "관계갈등" else ""
                     st.markdown(f"""
@@ -94,15 +94,9 @@ if st.session_state["step"] == "start":
                         </div>
                     """, unsafe_allow_html=True)
 
-                    r1, r2, r3 = st.columns([1, 2, 1])
-                    with r2:
-                        if st.radio(" ", ["관계갈등"], key="radio_conflict", label_visibility="collapsed") == "관계갈등":
-                            st.session_state["selected_label"] = "관계갈등"
-
-                # 버튼 및 안내
-                selected_label = st.session_state.get("selected_label", None)
                 if selected_label:
                     selected_key = topic_options[selected_label]["key"]
+                    st.session_state["selected_label"] = selected_label
                     st.session_state["topic"] = selected_key
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
