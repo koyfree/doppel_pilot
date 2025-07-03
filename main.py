@@ -79,17 +79,18 @@ if st.session_state["step"] == "start":
                     "관계갈등": "relationship_conflict"
                 }
 
-                # 쿼리 파라미터로 주제 선택 감지
+                # 🔁 쿼리 파라미터 감지 → session_state 반영
                 query_params = st.query_params
                 topic_param = query_params.get("topic", [None])[0] if "topic" in query_params else None
-                if topic_param in topic_options.values():
+
+                if topic_param in topic_options.values() and st.session_state.get("topic") != topic_param:
                     st.session_state["topic"] = topic_param
                     st.experimental_set_query_params()  # 파라미터 제거
-                    st.rerun()  # topic이 설정된 상태로 새로 렌더링
+                    st.rerun()
 
                 selected_topic = st.session_state.get("topic", "")
 
-                # 카드 생성
+                # 카드 HTML 생성
                 cards_html = '<div class="card-container">'
                 for label, key in topic_options.items():
                     selected_class = "selected" if selected_topic == key else ""
@@ -107,10 +108,9 @@ if st.session_state["step"] == "start":
                         f'</div>'
                     )
                 cards_html += '</div>'
-
                 st.markdown(cards_html, unsafe_allow_html=True)
 
-                # NEXT 버튼
+                # NEXT 버튼 노출
                 if selected_topic:
                     reverse_lookup = {v: k for k, v in topic_options.items()}
                     selected_label = reverse_lookup[selected_topic]
