@@ -3,19 +3,34 @@ from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
 import time
 
-st.markdown("""
+def run():
+    st.title("🧠 AITwinBot 대화 세션")
+    client = OpenAI(api_key=st.secrets["openai"]["api_key"])
+
+    st.markdown("""
 <style>
-/* 말풍선 간 간격 줄이기 */
+/* user 메시지 배경색 변경 */
+div.stChatMessage.user {
+    background-color: #fcf0c5 !important;  /* 예: 밝은 하늘색 */
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+}
+
+/* assistant 메시지 배경색 추가 */
+div.stChatMessage.assistant {
+    background-color: #bfeeef !important;  /* 예: 따뜻한 주황빛 */
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+}
+
+/* 공통적으로 말풍선 사이 여백 줄이기 */
 div.stChatMessage {
     margin-bottom: 0.1rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
 
-def run():
-    st.title("🧠 AITwinBot 대화 세션")
-    client = OpenAI(api_key=st.secrets["openai"]["api_key"])
-
+    
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.phase = "intro"
