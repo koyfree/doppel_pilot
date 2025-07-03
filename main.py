@@ -17,6 +17,7 @@ st.markdown("""
     height: 230px;
     box-sizing: border-box;
     transition: border 0.2s ease;
+    margin-bottom: 10px;
 }
 .topic-card.selected {
     border: 4px solid #f63366;
@@ -25,12 +26,6 @@ st.markdown("""
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 12px;
-}
-.center-radio {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 10px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -71,44 +66,34 @@ if st.session_state["step"] == "start":
                     }
                 }
 
-                selected_label = st.radio(
-                    label="",
-                    options=list(topic_options.keys()),
-                    horizontal=True,
-                    index=None,
-                    key="radio_topic",
-                )
-
-                # 카드 UI
                 col1, col2 = st.columns(2)
+
                 with col1:
-                    selected = "selected" if selected_label == "정신건강" else ""
+                    is_selected = st.session_state.get("radio_topic") == "정신건강"
+                    card_class = "selected" if is_selected else ""
                     st.markdown(f"""
-                        <div class="topic-card {selected}">
+                        <div class="topic-card {card_class}">
                             <div class="topic-title">정신건강</div>
                             <div>{topic_options['정신건강']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
+                    if st.radio("정신건강 선택", ["정신건강"], key="radio_mh", label_visibility="collapsed"):
+                        st.session_state["radio_topic"] = "정신건강"
 
                 with col2:
-                    selected = "selected" if selected_label == "관계갈등" else ""
+                    is_selected = st.session_state.get("radio_topic") == "관계갈등"
+                    card_class = "selected" if is_selected else ""
                     st.markdown(f"""
-                        <div class="topic-card {selected}">
+                        <div class="topic-card {card_class}">
                             <div class="topic-title">관계갈등</div>
                             <div>{topic_options['관계갈등']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
+                    if st.radio("관계갈등 선택", ["관계갈등"], key="radio_rel", label_visibility="collapsed"):
+                        st.session_state["radio_topic"] = "관계갈등"
 
-                # 라디오 버튼 아래로 옮기고 중앙 정렬
-                st.markdown('<div class="center-radio">', unsafe_allow_html=True)
-                st.radio("주제를 선택하세요", list(topic_options.keys()),
-                         horizontal=True,
-                         key="radio_topic_centered",
-                         label_visibility="collapsed",
-                         index=["정신건강", "관계갈등"].index(selected_label) if selected_label else 0)
-                st.markdown('</div>', unsafe_allow_html=True)
+                selected_label = st.session_state.get("radio_topic")
 
-                # 상태 업데이트
                 if selected_label:
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["selected_label"] = selected_label
