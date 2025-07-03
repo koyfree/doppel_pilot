@@ -1,6 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
+import time
 
 def run():
     st.title("🧠 AITwinBot 대화 세션")
@@ -15,10 +16,6 @@ def run():
         st.session_state.awaiting_response = False
         st.session_state.pending_user_input = None
         st.session_state.profile = st.session_state.get("profile", "")
-        
-    st.write("🟡 현재 단계 (phase):", st.session_state.phase)
-    st.write("🟢 사용자 입력 기다림 (awaiting_user):", st.session_state.awaiting_user)
-    st.write("🔵 GPT 응답 대기 상태 (awaiting_response):", st.session_state.awaiting_response)
     
     # 메시지 출력
     for msg in st.session_state.messages:
@@ -40,10 +37,12 @@ def run():
     if st.session_state.phase == "intro":
         if st.session_state.intro_index < len(intro_messages):
             msg = intro_messages[st.session_state.intro_index]
-            st.chat_message("assistant").markdown(msg)
-            st.session_state.messages.append({"role": "assistant", "content": msg})
-            st.session_state.intro_index += 1
-            st.rerun()
+            if len(st.session_state.messages) == st.session_state.intro_index:
+                st.chat_message("assistant").markdown(msg)
+                st.session_state.messages.append({"role": "assistant", "content": msg})
+                time.sleep(0.5)  # 💡 잠깐 멈춰서 사용자에게 보여지도록 함
+                st.session_state.intro_index += 1
+                st.rerun()
         else:
             st.session_state.phase = "prompt1"
             st.session_state.awaiting_response = True
@@ -107,11 +106,12 @@ def run():
         if st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
+            time.sleep(0.1)
         elif st.session_state.phase == "insight":
             st.session_state.phase = "suggestion_button"
             st.session_state.awaiting_user = False
         elif st.session_state.phase == "suggestion":
-            final_msg = "📋 설문은 아래 링크에서 진행해 주세요!\n👉 [설문 링크](https://example.com)"
+            final_msg = "이것으로 대화가 완료되었습니다! \n📋 설문은 아래 링크에서 진행해 주세요!\n👉 [설문 링크](https://example.com)"
             st.chat_message("assistant").markdown(final_msg)
             st.session_state.messages.append({"role": "assistant", "content": final_msg})
             st.session_state.phase = "done"
