@@ -6,17 +6,17 @@ st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 # CSS 스타일 설정
 st.markdown("""
 <style>
-.card-row {
+.card-container {
     display: flex;
     justify-content: center;
     gap: 40px;
     margin-top: 20px;
-    flex-direction: row;
+    flex-wrap: wrap;
 }
 .topic-card {
     width: 300px;
-    background-color: #ffffff;
-    color: black;
+    background-color: #1b5b84;
+    color: white;
     padding: 25px;
     border-radius: 12px;
     font-size: 16px;
@@ -39,7 +39,6 @@ st.markdown("""
 .center-radio {
     display: flex;
     justify-content: center;
-    gap: 50px;
     margin-top: 30px;
 }
 button {
@@ -94,30 +93,22 @@ if st.session_state["step"] == "start":
 
                 selected_topic = st.session_state.get("topic", "")
 
-                st.markdown('<div class="card-row">', unsafe_allow_html=True)
+                st.markdown('<div class="card-container">', unsafe_allow_html=True)
 
-                # 정신건강 카드
-                mental_selected = "selected" if selected_topic == "mental_health" else ""
-                rel_selected = "selected" if selected_topic == "relationship_conflict" else ""
-
-                st.markdown(f"""
-                <div class="topic-card {mental_selected}">
-                    <div>
-                        <div class="topic-title">정신건강</div>
-                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  
-                        최근에 겪고 있는 스트레스나 감정적으로  
-                        힘든 일들에 대해 대화하게 됩니다.
+                for label, key in topic_options.items():
+                    selected = "selected" if selected_topic == key else ""
+                    card_text = {
+                        "정신건강": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  최근에 겪고 있는 스트레스나 감정적으로  힘든 일들에 대해 대화하게 됩니다.",
+                        "관계갈등": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  최근에 있었던 인간관계 문제나  마음이 불편했던 상황들에 대해 대화하게 됩니다."
+                    }[label]
+                    st.markdown(f"""
+                    <div class="topic-card {selected}">
+                        <div>
+                            <div class="topic-title">{label}</div>
+                            {card_text}
+                        </div>
                     </div>
-                </div>
-                <div class="topic-card {rel_selected}">
-                    <div>
-                        <div class="topic-title">관계갈등</div>
-                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  
-                        최근에 있었던 인간관계 문제나  
-                        마음이 불편했던 상황들에 대해 대화하게 됩니다.
-                    </div>
-                </div>
-                """, unsafe_allow_html=True)
+                    """, unsafe_allow_html=True)
 
                 st.markdown('</div>', unsafe_allow_html=True)
 
