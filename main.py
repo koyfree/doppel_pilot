@@ -3,38 +3,46 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-# CSS for 카드처럼 보이는 버튼
+# CSS 스타일 정의
 st.markdown("""
 <style>
-div.stButton > button {
+.card-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+.topic-card {
+    width: 300px;
     background-color: #1b5b84;
     color: white;
     padding: 25px;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 400;
-    height: 240px;
-    width: 100%;
-    text-align: left;
+    height: auto;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    margin-bottom: 20px;
-    border: 4px solid transparent;
+    position: relative;
 }
-div.stButton > button:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+.topic-card input[type="radio"] {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    transform: scale(1.5);
 }
-div.stButton.selected > button {
-    border: 4px solid #f63366;
+.topic-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: white;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# 초기 상태 설정
 if "step" not in st.session_state:
     st.session_state["step"] = "start"
 
-# STEP 1
 if st.session_state["step"] == "start":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("설문 초반에 입력하신 ID를 동일하게 기입해 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요 :)")
@@ -58,29 +66,43 @@ if st.session_state["step"] == "start":
                 st.markdown("### 대화 주제를 선택해 주세요.")
 
                 topic_options = {
-                    "정신건강": "mental_health",
-                    "관계갈등": "relationship_conflict"
+                    "정신건강": {
+                        "key": "mental_health",
+                        "description": "이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다."
+                    },
+                    "관계갈등": {
+                        "key": "relationship_conflict",
+                        "description": "이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
+                    }
                 }
 
-                selected_topic = st.session_state.get("topic", "")
+                # 라디오 선택 처리
+                selected_label = st.radio(
+                    "주제를 아래 카드에서 선택하세요:",
+                    options=list(topic_options.keys()),
+                    index=None,
+                    label_visibility="collapsed",
+                )
 
-                col1, col2 = st.columns(2)
-
-                with col1:
-                    if st.button("정신건강"):
-                        st.session_state["topic"] = "mental_health"
-
-                with col2:
-                    if st.button("관계갈등"):
-                        st.session_state["topic"] = "relationship_conflict"
-
-                # 강조 테두리는 CSS로 하기 어려우므로 선택 상태 표시
-                selected_label = {
-                    "mental_health": "정신건강",
-                    "relationship_conflict": "관계갈등"
-                }.get(st.session_state.get("topic", ""), None)
+                # 카드 HTML 출력
+                card_html = '<div class="card-container">'
+                for label, content in topic_options.items():
+                    checked = "checked" if selected_label == label else ""
+                    card_html += f"""
+                        <label>
+                        <div class="topic-card">
+                            <div class="topic-title">{label}</div>
+                            <div>{content['description']}</div>
+                            <input type="radio" name="topic_fake" {checked} disabled />
+                        </div>
+                        </label>
+                    """
+                card_html += '</div>'
+                st.markdown(card_html, unsafe_allow_html=True)
 
                 if selected_label:
+                    selected_key = topic_options[selected_label]["key"]
+                    st.session_state["topic"] = selected_key
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
@@ -89,7 +111,6 @@ if st.session_state["step"] == "start":
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
 
-# STEP 2: 안내문
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("### 📝 연구 안내")
@@ -104,7 +125,6 @@ elif st.session_state["step"] == "instructions":
         st.session_state["step"] = "chat"
         st.rerun()
 
-# STEP 3: 챗봇 실행
 elif st.session_state["step"] == "chat":
     topic = st.session_state["topic"]
     if topic == "mental_health":
