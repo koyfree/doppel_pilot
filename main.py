@@ -1,5 +1,6 @@
 import streamlit as st
 from knowledge_dict import build_knowledge_dict
+import time
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
@@ -44,36 +45,33 @@ if st.session_state["step"] == "start":
     user_name = st.text_input("", key="user_input_name")
 
     st.markdown("#### 대화 주제를 선택해 주세요.")
-    col1, col2 = st.columns(2)
+    # 카드 선택 시 query param으로 이동
+query_params = st.experimental_get_query_params()
 
-    with col1:
-        if st.button(" ", key="mental_card"):
-            st.session_state["topic"] = "mental_health"
-        st.markdown(
-            """
-            <div class="card" onclick="document.querySelector('[data-testid=stButton]').click()">
-                <div class="card-title">정신건강</div>
-                <div class="card-desc">
-                    이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.
-                </div>
+if "topic" in query_params:
+    st.session_state["topic"] = query_params["topic"][0]
+    st.success(f"선택된 주제: {st.session_state['topic']}")
+    # 다음 단계로 이동하도록 조건 설정 가능
+
+st.markdown(
+    """
+    <div class="card-container">
+        <a href="?topic=mental_health" class="card">
+            <div class="card-title">정신건강</div>
+            <div class="card-desc">
+                이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.
             </div>
-            """, unsafe_allow_html=True
-        )
-
-    with col2:
-        if st.button(" ", key="rel_card"):
-            st.session_state["topic"] = "relationship_conflict"
-        st.markdown(
-            """
-            <div class="card" onclick="document.querySelector('[data-testid=stButton]').click()">
-                <div class="card-title">관계갈등</div>
-                <div class="card-desc">
-                    이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다.
-                </div>
+        </a>
+        <a href="?topic=relationship_conflict" class="card">
+            <div class="card-title">관계갈등</div>
+            <div class="card-desc">
+                이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다.
             </div>
-            """, unsafe_allow_html=True
-        )
-
+        </a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
     # 3. ID 확인 및 NEXT 버튼
     if user_name:
