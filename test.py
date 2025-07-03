@@ -1,3 +1,4 @@
+
 import streamlit as st
 from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
@@ -23,10 +24,10 @@ def run():
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
-    # 시스템 프롬프트 구성
+    # system prompt 준비
     system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
 
-    # 인트로 출력
+    # 인트로 메시지 출력
     intro_messages = [
         "Hi! I'm your doppelgänger chatbot created based on your data. Nice to meet you!",
         "Before we officially begin, let me explain how our conversation will go.",
@@ -46,7 +47,7 @@ def run():
             st.session_state.awaiting_response = True
             st.rerun()
 
-    # YES 버튼 처리 (공감/성찰 후)
+    # YES 버튼 처리
     if st.session_state.phase in ["insight_button", "suggestion_button"]:
         if st.button("✅ YES"):
             st.session_state.messages.append({"role": "user", "content": "YES"})
@@ -61,8 +62,10 @@ def run():
                 st.session_state.phase = "suggestion"
             st.rerun()
 
-    # 사용자 입력 허용 단계
-    allow_input = st.session_state.phase in ["prompt1", "followup1", "followup2", "followup3"]
+    # 사용자 입력 가능 단계
+    allow_input = st.session_state.phase in [
+        "prompt1", "followup1", "followup2", "followup3"
+    ]
     user_input = None
     if allow_input and not st.session_state.awaiting_response:
         user_input = st.chat_input("메시지를 입력해 주세요.")
@@ -72,14 +75,8 @@ def run():
         st.session_state.messages.append({"role": "user", "content": user_input})
         st.session_state.user_inputs.append(user_input)
         st.session_state.pending_user_input = user_input
-
-        if st.session_state.phase == "followup3":
-            st.session_state.phase = "reflection"
-            st.session_state.awaiting_response = True
-            st.session_state.awaiting_user = False
-        else:
-            st.session_state.awaiting_response = True
-            st.session_state.awaiting_user = False
+        st.session_state.awaiting_response = True
+        st.session_state.awaiting_user = False
         st.rerun()
 
     # GPT 응답 생성
@@ -91,11 +88,10 @@ def run():
                 temperature=0.7,
             )
             reply = response.choices[0].message.content.strip()
+            st.chat_message("assistant").markdown(reply)
+            st.session_state.messages.append({"role": "assistant", "content": reply})
 
-        st.chat_message("assistant").markdown(reply)
-        st.session_state.messages.append({"role": "assistant", "content": reply})
-
-        # 단계 전환
+        # phase 전환
         if st.session_state.phase == "prompt1":
             st.session_state.phase = "followup1"
             st.session_state.awaiting_user = True
@@ -105,6 +101,9 @@ def run():
         elif st.session_state.phase == "followup2":
             st.session_state.phase = "followup3"
             st.session_state.awaiting_user = True
+        elif st.session_state.phase == "followup3":
+            st.session_state.phase = "reflection"
+            st.session_state.awaiting_user = True
         elif st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
@@ -112,9 +111,14 @@ def run():
             st.session_state.phase = "suggestion_button"
             st.session_state.awaiting_user = False
         elif st.session_state.phase == "suggestion":
+            st.chat_message("assistant").markdown(reply)
+            st.session_state.messages.append({"role": "assistant", "content": reply})
+
+            # 설문 안내 메시지도 같이 출력
             final_msg = "📋 설문은 아래 링크에서 진행해 주세요!\n👉 [설문 링크](https://example.com)"
             st.chat_message("assistant").markdown(final_msg)
             st.session_state.messages.append({"role": "assistant", "content": final_msg})
+
             st.session_state.phase = "done"
 
         st.session_state.awaiting_response = False
