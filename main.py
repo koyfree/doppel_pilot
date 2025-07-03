@@ -14,7 +14,7 @@ st.markdown("""
     flex-direction: row;
 }
 .topic-card {
-    width: 300px;
+    width: 200px;
     background-color: #1b5b84;
     color: white;
     padding: 25px;
