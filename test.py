@@ -1,3 +1,8 @@
+import streamlit as st
+from openai import OpenAI
+from prompts import SYSTEM_PROMPT_MTL
+import time
+
 st.markdown("""
 <style>
 /* 말풍선 간 간격 줄이기 */
@@ -6,11 +11,6 @@ div.stChatMessage {
 }
 </style>
 """, unsafe_allow_html=True)
-
-import streamlit as st
-from openai import OpenAI
-from prompts import SYSTEM_PROMPT_MTL
-import time
 
 def run():
     st.title("🧠 AITwinBot 대화 세션")
