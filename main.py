@@ -63,7 +63,13 @@ if st.session_state["step"] == "start":
 
                 st.markdown("### 대화 주제를 선택해 주세요.")
                 col1, col2 = st.columns(2)
-
+                
+                # 라디오 버튼용 옵션
+                topic_options = {
+                    "정신건강": "mental_health",
+                    "관계갈등": "relationship_conflict"
+                }
+                
                 with col1:
                     with st.container():
                         st.markdown("""
@@ -74,11 +80,9 @@ if st.session_state["step"] == "start":
                                 최근에 겪고 있는 스트레스나 감정적으로  
                                 힘든 일들에 대해 대화하게 됩니다.
                             </div>
+                        </div>
                         """, unsafe_allow_html=True)
-                        if st.button("🧘 정신 건강 선택", key="mental_btn"):
-                            st.session_state["topic"] = "mental_health"
-                        st.markdown("</div>", unsafe_allow_html=True)
-
+                
                 with col2:
                     with st.container():
                         st.markdown("""
@@ -89,16 +93,23 @@ if st.session_state["step"] == "start":
                                 최근에 있었던 인간관계 문제나  
                                 마음이 불편했던 상황들에 대해 대화하게 됩니다.
                             </div>
+                        </div>
                         """, unsafe_allow_html=True)
-                        if st.button("🤝 관계 갈등 선택", key="rel_btn"):
-                            st.session_state["topic"] = "relationship_conflict"
-                        st.markdown("</div>", unsafe_allow_html=True)
-
-                # 주제 선택되면 NEXT 버튼 노출
-                if "topic" in st.session_state:
-                    label = "정신 건강" if st.session_state["topic"] == "mental_health" else "관계 갈등"
-                    st.success(f"선택된 주제: {label}")
-
+                
+                # 라디오 버튼 중앙 정렬
+                st.markdown("<br>", unsafe_allow_html=True)
+                selected_label = st.radio(
+                    "원하는 주제를 선택해 주세요.",
+                    list(topic_options.keys()),
+                    horizontal=True,
+                    label_visibility="collapsed"
+                )
+                
+                # 선택되면 상태 저장
+                if selected_label:
+                    st.session_state["topic"] = topic_options[selected_label]
+                    st.success(f"선택된 주제: {selected_label}")
+                
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
                         st.rerun()
