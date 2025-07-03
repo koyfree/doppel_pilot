@@ -3,18 +3,10 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-# 카드 스타일 정의 (회색 동그라미 제거됨)
+# 카드 스타일
 st.markdown("""
 <style>
-.card-container {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
 .topic-card {
-    width: 300px;
     background-color: #1b5b84;
     color: white;
     padding: 25px;
@@ -22,17 +14,18 @@ st.markdown("""
     font-size: 16px;
     font-weight: 400;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    height: 230px;
     box-sizing: border-box;
 }
 .topic-title {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 12px;
-    color: white;
 }
-.radio-row label {
-    margin-right: 30px;
-    font-size: 18px;
+.radio-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -73,27 +66,34 @@ if st.session_state["step"] == "start":
                     }
                 }
 
-                # 카드 렌더링
-                cards_html = '<div class="card-container">'
-                for label, content in topic_options.items():
-                    cards_html += (
-                        f'<div class="topic-card">'
-                        f'<div class="topic-title">{label}</div>'
-                        f'<div>{content["description"]}</div>'
-                        f'</div>'
-                    )
-                cards_html += '</div>'
-                st.markdown(cards_html, unsafe_allow_html=True)
+                # 가로 두 칼럼 생성
+                col1, col2 = st.columns(2)
+                selected_label = st.session_state.get("selected_label", None)
 
-                # 카드 밑 라디오버튼 (가로 정렬)
-                selected_label = st.radio(
-                    "주제를 선택하세요:",
-                    options=list(topic_options.keys()),
-                    index=None,
-                    horizontal=True
-                )
+                # 카드 + 라디오 렌더링
+                with col1:
+                    st.markdown(f"""
+                        <div class="topic-card">
+                            <div class="topic-title">정신건강</div>
+                            <div>{topic_options['정신건강']['description']}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
+                    with st.container():
+                        if st.radio(" ", ["정신건강"], horizontal=True, label_visibility="collapsed") == "정신건강":
+                            st.session_state["selected_label"] = "정신건강"
 
-                # 선택된 경우
+                with col2:
+                    st.markdown(f"""
+                        <div class="topic-card">
+                            <div class="topic-title">관계갈등</div>
+                            <div>{topic_options['관계갈등']['description']}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
+                    with st.container():
+                        if st.radio("  ", ["관계갈등"], horizontal=True, label_visibility="collapsed") == "관계갈등":
+                            st.session_state["selected_label"] = "관계갈등"
+
+                selected_label = st.session_state.get("selected_label", None)
                 if selected_label:
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["topic"] = selected_key
@@ -105,7 +105,6 @@ if st.session_state["step"] == "start":
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
 
-# STEP 2: 안내문
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("### 📝 연구 안내")
@@ -120,7 +119,6 @@ elif st.session_state["step"] == "instructions":
         st.session_state["step"] = "chat"
         st.rerun()
 
-# STEP 3: 챗봇 실행
 elif st.session_state["step"] == "chat":
     topic = st.session_state["topic"]
     if topic == "mental_health":
