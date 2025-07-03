@@ -94,7 +94,7 @@ if st.session_state["step"] == "start":
                     st.markdown(button_html, unsafe_allow_html=True)
 
                 # 선택 처리
-                selected = st.experimental_get_query_params().get("select_topic", [None])[0]
+                selected = st.query_params().get("select_topic", [None])[0]
                 if selected in topic_options.values():
                     st.session_state["topic"] = selected
                     st.experimental_set_query_params()  # 쿼리 파라미터 초기화
