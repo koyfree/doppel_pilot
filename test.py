@@ -3,33 +3,19 @@ from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
 import time
 
+st.markdown("""
+<style>
+/* assistant 말풍선 간 간격 줄이기 */
+div.stChatMessage {
+    margin-bottom: 0.1rem !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 def run():
     st.title("🧠 AITwinBot 대화 세션")
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
 
-    st.markdown("""
-<style>
-/* 공통: 말풍선 여백 줄이기 */
-div[data-testid="stChatMessage"] {
-    margin-bottom: 0.5rem !important;
-}
-
-/* 사용자(user) 말풍선 배경색 */
-div[data-testid="stChatMessage"]:has(div[data-testid="stMarkdownContainer"] > div:has(span[aria-label="user"])) {
-    background-color: #E0F7FA !important;  /* 밝은 하늘색 */
-    padding: 0.75rem;
-    border-radius: 0.75rem;
-}
-
-/* 챗봇(assistant) 말풍선 배경색 */
-div[data-testid="stChatMessage"]:has(div[data-testid="stMarkdownContainer"] > div:has(span[aria-label="assistant"])) {
-    background-color: #FFF3E0 !important;  /* 따뜻한 크림색 */
-    padding: 0.75rem;
-    border-radius: 0.75rem;
-}
-</style>
-""", unsafe_allow_html=True)
-    
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.phase = "intro"
@@ -51,7 +37,7 @@ div[data-testid="stChatMessage"]:has(div[data-testid="stMarkdownContainer"] > di
     # 인트로 메시지
     intro_messages = [
         "안녕! 나는 너의 데이터를 기반으로 만들어진 너의 AITwinBot이야. 만나서 반가워!",
-        "본격적으로 시작하기 전에, 우리 대화가 어떻게 진행될지 간단히 설명할.",
+        "본격적으로 시작하기 전에, 우리 대화가 어떻게 진행될지 간단히 설명할게.",
         "내가 특정 주제에 대해 몇 가지 물어볼게. 그걸 바탕으로, 이 주제에 대한 내 생각을 세 부분으로 나누어 얘기할거야. 마지막엔 대화가 어땠는지 평가할 수 있는 설문 링크를 알려 줄게. 꼭 참여해 줘!",
         "좋아, 그럼 시작할게!"
     ]
