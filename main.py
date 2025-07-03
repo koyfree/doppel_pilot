@@ -82,13 +82,17 @@ if st.session_state["step"] == "start":
                 # 🔁 쿼리 파라미터 감지 → session_state 반영
                 query_params = st.query_params
                 topic_param = query_params.get("topic", [None])[0] if "topic" in query_params else None
-
-                if topic_param in topic_options.values() and st.session_state.get("topic") != topic_param:
-                    st.session_state["topic"] = topic_param
-                    st.experimental_set_query_params()  # 파라미터 제거
-                    st.rerun()
-
+                
+                if topic_param in ["mental_health", "relationship_conflict"]:
+                    if st.session_state.get("topic") != topic_param:
+                        st.session_state["topic"] = topic_param
+                        st.experimental_set_query_params()
+                        st.rerun()
+                
+                # 선택된 토픽 가져오기
                 selected_topic = st.session_state.get("topic", "")
+                reverse_lookup = {"mental_health": "정신건강", "relationship_conflict": "관계갈등"}
+                selected_label = reverse_lookup.get(selected_topic)
 
                 # 카드 HTML 생성
                 cards_html = '<div class="card-container">'
@@ -111,15 +115,11 @@ if st.session_state["step"] == "start":
                 st.markdown(cards_html, unsafe_allow_html=True)
 
                 # NEXT 버튼 노출
-                reverse_lookup = {v: k for k, v in topic_options.items()}
-                selected_label = reverse_lookup.get(selected_topic)
-                
                 if selected_label:
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
                         st.rerun()
-
         
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
