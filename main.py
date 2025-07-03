@@ -82,9 +82,11 @@ if st.session_state["step"] == "start":
                         pass
 
                 # URL 파라미터 통해 선택 확인
-                query_params = st.experimental_get_query_params()
+                query_params = st.query_params
                 if "topic" in query_params:
-                    topic = query_params["topic"][0]
+                    topic = query_params["topic"]
+                    if isinstance(topic, list):  # 리스트일 수 있음
+                        topic = topic[0]
                     st.session_state["topic"] = topic
                     st.session_state["step"] = "instructions"
                     st.rerun()
