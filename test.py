@@ -7,7 +7,7 @@ st.markdown("""
 <style>
 /* 말풍선 간 간격 줄이기 */
 div.stChatMessage {
-    margin-bottom: 0.3rem !important;
+    margin-bottom: 0.1rem !important;
 }
 </style>
 """, unsafe_allow_html=True)
