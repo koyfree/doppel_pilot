@@ -6,6 +6,11 @@ st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 # CSS 스타일 설정
 st.markdown("""
 <style>
+.topic-container-wrapper {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
 .topic-container {
     display: flex;
     flex-direction: row;
@@ -13,6 +18,7 @@ st.markdown("""
     align-items: flex-start;
     gap: 40px;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 .topic-card {
     width: 300px;
@@ -93,7 +99,7 @@ if st.session_state["step"] == "start":
 
                 selected_topic = st.session_state.get("topic", "")
 
-                st.markdown('<div class="topic-container">', unsafe_allow_html=True)
+                st.markdown('<div class="topic-container-wrapper"><div class="topic-container">', unsafe_allow_html=True)
 
                 # 정신건강 카드
                 mental_selected = "selected" if selected_topic == "mental_health" else ""
@@ -121,7 +127,7 @@ if st.session_state["step"] == "start":
                 </div>
                 """, unsafe_allow_html=True)
 
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown('</div></div>', unsafe_allow_html=True)
 
                 if selected_label:
                     st.success(f"선택된 주제: {selected_label}")
