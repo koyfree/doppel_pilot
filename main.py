@@ -14,9 +14,9 @@ st.markdown("""
     flex-direction: row;
 }
 .topic-card {
-    width: 200px;
-    background-color: #1b5b84;
-    color: white;
+    width: 300px;
+    background-color: #ffffff;
+    color: black;
     padding: 25px;
     border-radius: 12px;
     font-size: 16px;
