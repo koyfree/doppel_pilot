@@ -44,13 +44,17 @@ def run():
 
     # 인트로 단계 처리
     if st.session_state.phase == "intro":
-        if st.session_state.intro_index == 0:
-            full_intro = "\n\n".join(intro_messages)
-            st.chat_message("assistant").markdown(full_intro)
-            st.session_state.messages.append({"role": "assistant", "content": full_intro})
-            st.session_state.intro_index = len(intro_messages)  # 전부 출력 완료 처리
-            time.sleep(0.5)
-            st.rerun()
+        if st.session_state.intro_index < len(intro_messages):
+            current_msg = intro_messages[st.session_state.intro_index]
+
+            # 이미 추가된 메시지인지 확인
+            if len(st.session_state.messages) == st.session_state.intro_index:
+                with st.chat_message("assistant"):
+                    st.markdown(current_msg)
+                st.session_state.messages.append({"role": "assistant", "content": current_msg})
+                time.sleep(0.5)
+                st.session_state.intro_index += 1
+                st.rerun()
         else:
             st.session_state.phase = "prompt1"
             st.session_state.awaiting_response = True
