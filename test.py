@@ -3,11 +3,7 @@ from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
 import time
 
-def run():
-    st.title("🧠 AITwinBot 대화 세션")
-    client = OpenAI(api_key=st.secrets["openai"]["api_key"])
-
-    st.markdown("""
+st.markdown("""
 <style>
 /* user 메시지 배경색 변경 */
 div.stChatMessage.user {
@@ -30,7 +26,10 @@ div.stChatMessage {
 </style>
 """, unsafe_allow_html=True)
 
-    
+def run():
+    st.title("🧠 AITwinBot 대화 세션")
+    client = OpenAI(api_key=st.secrets["openai"]["api_key"])
+
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.phase = "intro"
