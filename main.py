@@ -11,7 +11,7 @@ st.markdown("""
     justify-content: center;
     gap: 40px;
     margin-top: 20px;
-    flex-wrap: nowrap;
+    flex-direction: row;
 }
 .topic-card {
     width: 300px;
@@ -98,6 +98,8 @@ if st.session_state["step"] == "start":
 
                 # 정신건강 카드
                 mental_selected = "selected" if selected_topic == "mental_health" else ""
+                rel_selected = "selected" if selected_topic == "relationship_conflict" else ""
+
                 st.markdown(f"""
                 <div class="topic-card {mental_selected}">
                     <div>
@@ -107,11 +109,6 @@ if st.session_state["step"] == "start":
                         힘든 일들에 대해 대화하게 됩니다.
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
-
-                # 관계갈등 카드
-                rel_selected = "selected" if selected_topic == "relationship_conflict" else ""
-                st.markdown(f"""
                 <div class="topic-card {rel_selected}">
                     <div>
                         <div class="topic-title">관계갈등</div>
