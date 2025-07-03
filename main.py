@@ -26,10 +26,15 @@ st.markdown("""
     font-weight: bold;
     margin-bottom: 12px;
 }
+.center-radio {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
 </style>
 """, unsafe_allow_html=True)
 
-# 상태 초기화
 if "step" not in st.session_state:
     st.session_state["step"] = "start"
 
@@ -66,13 +71,12 @@ if st.session_state["step"] == "start":
                     }
                 }
 
-                # 라디오 선택 UI (하나의 컴포넌트로 통일)
                 selected_label = st.radio(
                     label="",
                     options=list(topic_options.keys()),
                     horizontal=True,
                     index=None,
-                    key="radio_topic"
+                    key="radio_topic",
                 )
 
                 # 카드 UI
@@ -85,6 +89,7 @@ if st.session_state["step"] == "start":
                             <div>{topic_options['정신건강']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
+
                 with col2:
                     selected = "selected" if selected_label == "관계갈등" else ""
                     st.markdown(f"""
@@ -94,6 +99,16 @@ if st.session_state["step"] == "start":
                         </div>
                     """, unsafe_allow_html=True)
 
+                # 라디오 버튼 아래로 옮기고 중앙 정렬
+                st.markdown('<div class="center-radio">', unsafe_allow_html=True)
+                st.radio("주제를 선택하세요", list(topic_options.keys()),
+                         horizontal=True,
+                         key="radio_topic_centered",
+                         label_visibility="collapsed",
+                         index=["정신건강", "관계갈등"].index(selected_label) if selected_label else 0)
+                st.markdown('</div>', unsafe_allow_html=True)
+
+                # 상태 업데이트
                 if selected_label:
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["selected_label"] = selected_label
