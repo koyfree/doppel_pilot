@@ -3,13 +3,13 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-# CSS: 버튼을 카드처럼 스타일링
+# CSS for 카드처럼 보이는 버튼
 st.markdown("""
 <style>
-.card-button {
+div.stButton > button {
     background-color: #1b5b84;
     color: white;
-    padding: 25px 20px;
+    padding: 25px;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 400;
@@ -17,24 +17,24 @@ st.markdown("""
     width: 100%;
     text-align: left;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    margin-bottom: 20px;
     border: 4px solid transparent;
-    transition: all 0.2s ease;
 }
-.card-button:hover {
+div.stButton > button:hover {
     transform: scale(1.02);
     box-shadow: 0 6px 12px rgba(0,0,0,0.25);
 }
-.card-button.selected {
+div.stButton.selected > button {
     border: 4px solid #f63366;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# 상태 초기화
+# 초기 상태 설정
 if "step" not in st.session_state:
     st.session_state["step"] = "start"
 
-# STEP 1: ID 입력 + 주제 선택
+# STEP 1
 if st.session_state["step"] == "start":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("설문 초반에 입력하신 ID를 동일하게 기입해 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요 :)")
@@ -64,47 +64,21 @@ if st.session_state["step"] == "start":
 
                 selected_topic = st.session_state.get("topic", "")
 
-                # 카드 버튼 표시
                 col1, col2 = st.columns(2)
 
                 with col1:
-                    is_selected = selected_topic == "mental_health"
-                    button_html = f"""
-                    <button class="card-button {'selected' if is_selected else ''}" onclick="document.getElementById('mental_health_form').submit();">
-                        <div class="topic-title">정신건강</div>
-                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.
-                    </button>
-                    <form id="mental_health_form" method="post">
-                        <input type="hidden" name="select_topic" value="mental_health" />
-                    </form>
-                    """
-                    st.markdown(button_html, unsafe_allow_html=True)
+                    if st.button("정신건강"):
+                        st.session_state["topic"] = "mental_health"
 
                 with col2:
-                    is_selected = selected_topic == "relationship_conflict"
-                    button_html = f"""
-                    <button class="card-button {'selected' if is_selected else ''}" onclick="document.getElementById('relationship_conflict_form').submit();">
-                        <div class="topic-title">관계갈등</div>
-                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다.
-                    </button>
-                    <form id="relationship_conflict_form" method="post">
-                        <input type="hidden" name="select_topic" value="relationship_conflict" />
-                    </form>
-                    """
-                    st.markdown(button_html, unsafe_allow_html=True)
+                    if st.button("관계갈등"):
+                        st.session_state["topic"] = "relationship_conflict"
 
-                # 선택 처리
-                selected = st.query_params().get("select_topic", [None])[0]
-                if selected in topic_options.values():
-                    st.session_state["topic"] = selected
-                    st.experimental_set_query_params()  # 쿼리 파라미터 초기화
-                    st.rerun()
-
-                # 선택되었으면 NEXT 버튼 표시
+                # 강조 테두리는 CSS로 하기 어려우므로 선택 상태 표시
                 selected_label = {
                     "mental_health": "정신건강",
                     "relationship_conflict": "관계갈등"
-                }.get(selected_topic, None)
+                }.get(st.session_state.get("topic", ""), None)
 
                 if selected_label:
                     st.success(f"선택된 주제: {selected_label}")
