@@ -7,14 +7,14 @@ st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 st.markdown("""
 <style>
 .topic-card {
-    background-color: #1b5b84;
-    color: white;
+    background-color: #ffffff;
+    color: black;
     padding: 25px;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 400;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    height: 230px;
+    height: 200px;
     box-sizing: border-box;
     transition: border 0.2s ease;
     margin-bottom: 10px;
@@ -63,11 +63,11 @@ if st.session_state["step"] == "start":
                 topic_options = {
                     "정신건강": {
                         "key": "mental_health",
-                        "description": "이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다."
+                        "description": "이 주제를 선택하면 당신은 AITwinBot과\n 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다."
                     },
                     "관계갈등": {
                         "key": "relationship_conflict",
-                        "description": "이 주제를 선택하면 당신은 당신의 AITwinBot과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
+                        "description": "이 주제를 선택하면 당신은 AITwinBot과\n 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
                     }
                 }
 
