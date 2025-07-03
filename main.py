@@ -11,7 +11,7 @@ st.markdown("""
     justify-content: center;
     gap: 40px;
     margin-top: 20px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 .topic-card {
     width: 300px;
