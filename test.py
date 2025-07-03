@@ -1,11 +1,9 @@
 import streamlit as st
 from openai import OpenAI
 from prompts import SYSTEM_PROMPT_MTL
-import time
 
 def run():
     st.title("🧠 AITwinBot 대화 세션")
-
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
 
     if "messages" not in st.session_state:
@@ -17,8 +15,7 @@ def run():
         st.session_state.awaiting_response = False
         st.session_state.pending_user_input = None
         st.session_state.profile = st.session_state.get("profile", "")
-
-
+        
     st.write("🟡 현재 단계 (phase):", st.session_state.phase)
     st.write("🟢 사용자 입력 기다림 (awaiting_user):", st.session_state.awaiting_user)
     st.write("🔵 GPT 응답 대기 상태 (awaiting_response):", st.session_state.awaiting_response)
@@ -28,8 +25,10 @@ def run():
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
+    # 시스템 프롬프트
     system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
 
+    # 인트로
     intro_messages = [
         "Hi! I'm your doppelgänger chatbot created based on your data. Nice to meet you!",
         "Before we officially begin, let me explain how our conversation will go.",
@@ -57,7 +56,6 @@ def run():
             st.session_state.user_inputs.append("YES")
             st.session_state.awaiting_user = False
             st.session_state.awaiting_response = True
-
             if st.session_state.phase == "insight_button":
                 st.session_state.phase = "insight"
             elif st.session_state.phase == "suggestion_button":
@@ -76,6 +74,7 @@ def run():
         st.session_state.user_inputs.append(user_input)
         st.session_state.pending_user_input = user_input
 
+        # followup3일 경우 → reflection으로 전환
         if st.session_state.phase == "followup3":
             st.session_state.phase = "reflection"
             st.session_state.awaiting_response = True
@@ -108,7 +107,7 @@ def run():
         elif st.session_state.phase == "followup2":
             st.session_state.phase = "followup3"
             st.session_state.awaiting_user = True
-            st.session_state.awaiting_response = False
+            st.session_state.awaiting_response = False  # GPT 응답 끝났고, 사용자 입력 기다림
         elif st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
