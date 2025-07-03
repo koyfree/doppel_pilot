@@ -8,7 +8,9 @@ st.markdown("""
 <style>
 .topic-container {
     display: flex;
+    flex-direction: row;
     justify-content: center;
+    align-items: flex-start;
     gap: 40px;
     margin-top: 20px;
 }
@@ -37,7 +39,7 @@ st.markdown("""
     display: flex;
     justify-content: center;
     gap: 50px;
-    margin-top: 20px;
+    margin-top: 30px;
 }
 button {
     border-radius: 8px !important;
@@ -54,7 +56,7 @@ if st.session_state["step"] == "start":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("설문 초반에 입력하신 ID를 동일한까드로 기입해 주세요. 잍어 버리신 경우 관리자에게 문의해 주세요 :)")
 
-    user_name = st.text_input("")
+    user_name = st.text_input("ID")
 
     if user_name:
         sheet_url = "https://docs.google.com/spreadsheets/d/1pQ9Wps-6sJH3EWgEgb4QdJJ_MItBBnSbTPbTKCWQhLI/edit?gid=1798623846#gid=1798623846"
@@ -64,7 +66,7 @@ if st.session_state["step"] == "start":
             knowledge = build_knowledge_dict(sheet_url, openai_api_key)
 
             if user_name not in knowledge:
-                st.error("⚠️ ID를 정확하게 기입해 주세요. ID는 대소문자를 구분합니다.")
+                st.error("⚠️ ID를 정확하게 기입해 주세요. ID는 대소문자를 구별합니다.")
             else:
                 st.success("✅ 확인 되었습니다!")
                 st.session_state["user_name"] = user_name
@@ -74,7 +76,7 @@ if st.session_state["step"] == "start":
 
                 topic_options = {
                     "정신건강": "mental_health",
-                    "관계개발": "relationship_conflict"
+                    "관계갈등": "relationship_conflict"
                 }
 
                 selected_label = st.radio(
@@ -99,7 +101,9 @@ if st.session_state["step"] == "start":
                 <div class="topic-card {mental_selected}">
                     <div>
                         <div class="topic-title">정신건강</div>
-                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  도움을 요청하고 싶은 것에 대해<br/>최근에 거친 스트레스나 감정적으로  힘들어했던 일들에 대해 대화하게 됩니다.
+                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  
+                        최근에 겪고 있는 스트레스나 감정적으로  
+                        힘든 일들에 대해 대화하게 됩니다.
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -109,8 +113,10 @@ if st.session_state["step"] == "start":
                 st.markdown(f"""
                 <div class="topic-card {rel_selected}">
                     <div>
-                        <div class="topic-title">관계개발</div>
-                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  도움을 요청하고 싶은 것에 대해<br/>최근에 있었던 인간관계 문제나  마음이 불편했던 상황들에 대해 대화하게 됩니다.
+                        <div class="topic-title">관계갈등</div>
+                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과  
+                        최근에 있었던 인간관계 문제나  
+                        마음이 불편했던 상황들에 대해 대화하게 됩니다.
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -119,7 +125,7 @@ if st.session_state["step"] == "start":
 
                 if selected_label:
                     st.success(f"선택된 주제: {selected_label}")
-                    if st.button("\u27a1\ufe0f NEXT"):
+                    if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
                         st.rerun()
 
@@ -129,19 +135,19 @@ if st.session_state["step"] == "start":
 # STEP 2: 안내문
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
-    st.markdown("### 📜 연구 안내")
+    st.markdown("### 📝 연구 안내")
     st.write("""
         이제부터 당신은 당신의 AITwinBot과 얘기하게 됩니다.  
-        이 차트밋은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며, 대화를 통해 당신에 대해 더 잘 알게 됩니다.
+        이 챗봇은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며, 대화를 통해 당신에 대해 더 잘 알게 됩니다.
 
-        대화를 시작하시려면 아래 '시작하기' 버튼을 누르세요.
+        대화를 시작하시려면 아래 '시작하기' 버튼을 눌러 주세요.
     """)
 
     if st.button("👉 시작하기"):
         st.session_state["step"] = "chat"
         st.rerun()
 
-# STEP 3: 차트밋 실행
+# STEP 3: 챗봇 실행
 elif st.session_state["step"] == "chat":
     topic = st.session_state["topic"]
     if topic == "mental_health":
