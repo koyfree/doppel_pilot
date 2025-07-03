@@ -76,7 +76,7 @@ def run():
 
         # followup3일 경우 → reflection으로 전환
         if st.session_state.phase == "followup3":
-            st.session_state.phase = "reflection"
+            st.session_state.phase = "after_followup3"
             st.session_state.awaiting_response = True
             st.session_state.awaiting_user = False
         else:
@@ -108,6 +108,9 @@ def run():
             st.session_state.phase = "followup3"
             st.session_state.awaiting_user = True
             st.session_state.awaiting_response = False  # GPT 응답 끝났고, 사용자 입력 기다림
+        elif st.session_state.phase == "after_followup3":
+            st.session_state.phase == "reflection"
+            st.session_state.awating_user = False
         elif st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
