@@ -3,46 +3,29 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-# CSS 스타일 정의
+# CSS: 버튼을 카드처럼 스타일링
 st.markdown("""
 <style>
-.card-container {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
-.topic-card {
-    width: 300px;
+.card-button {
     background-color: #1b5b84;
     color: white;
-    padding: 25px;
+    padding: 25px 20px;
     border-radius: 12px;
     font-size: 16px;
     font-weight: 400;
     height: 240px;
+    width: 100%;
+    text-align: left;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
     border: 4px solid transparent;
-    box-sizing: border-box;
-    cursor: pointer;
+    transition: all 0.2s ease;
 }
-.topic-card:hover {
+.card-button:hover {
     transform: scale(1.02);
     box-shadow: 0 6px 12px rgba(0,0,0,0.25);
 }
-.topic-card.selected {
+.card-button.selected {
     border: 4px solid #f63366;
-}
-.topic-title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 12px;
-    color: white;
-}
-button {
-    border-radius: 8px !important;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -79,48 +62,56 @@ if st.session_state["step"] == "start":
                     "관계갈등": "relationship_conflict"
                 }
 
-                # 🔁 쿼리 파라미터 감지 → session_state 반영
-                query_params = st.query_params
-                topic_param = query_params.get("topic", [None])[0] if "topic" in query_params else None
-                
-                if topic_param in ["mental_health", "relationship_conflict"]:
-                    if st.session_state.get("topic") != topic_param:
-                        st.session_state["topic"] = topic_param
-                        st.experimental_set_query_params()
-                        st.rerun()
-                
-                # 선택된 토픽 가져오기
                 selected_topic = st.session_state.get("topic", "")
-                reverse_lookup = {"mental_health": "정신건강", "relationship_conflict": "관계갈등"}
-                selected_label = reverse_lookup.get(selected_topic)
 
-                # 카드 HTML 생성
-                cards_html = '<div class="card-container">'
-                for label, key in topic_options.items():
-                    selected_class = "selected" if selected_topic == key else ""
-                    card_text = {
-                        "정신건강": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.",
-                        "관계갈등": "이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
-                    }[label]
+                # 카드 버튼 표시
+                col1, col2 = st.columns(2)
 
-                    cards_html += (
-                        f'<div class="topic-card {selected_class}" onclick="window.location.href=\'?topic={key}\'">'
-                        f'<div>'
-                        f'<div class="topic-title">{label}</div>'
-                        f'{card_text}'
-                        f'</div>'
-                        f'</div>'
-                    )
-                cards_html += '</div>'
-                st.markdown(cards_html, unsafe_allow_html=True)
+                with col1:
+                    is_selected = selected_topic == "mental_health"
+                    button_html = f"""
+                    <button class="card-button {'selected' if is_selected else ''}" onclick="document.getElementById('mental_health_form').submit();">
+                        <div class="topic-title">정신건강</div>
+                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다.
+                    </button>
+                    <form id="mental_health_form" method="post">
+                        <input type="hidden" name="select_topic" value="mental_health" />
+                    </form>
+                    """
+                    st.markdown(button_html, unsafe_allow_html=True)
 
-                # NEXT 버튼 노출
+                with col2:
+                    is_selected = selected_topic == "relationship_conflict"
+                    button_html = f"""
+                    <button class="card-button {'selected' if is_selected else ''}" onclick="document.getElementById('relationship_conflict_form').submit();">
+                        <div class="topic-title">관계갈등</div>
+                        이 주제를 선택하면 당신은 당신의 <b>AITwinBot</b>과 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다.
+                    </button>
+                    <form id="relationship_conflict_form" method="post">
+                        <input type="hidden" name="select_topic" value="relationship_conflict" />
+                    </form>
+                    """
+                    st.markdown(button_html, unsafe_allow_html=True)
+
+                # 선택 처리
+                selected = st.experimental_get_query_params().get("select_topic", [None])[0]
+                if selected in topic_options.values():
+                    st.session_state["topic"] = selected
+                    st.experimental_set_query_params()  # 쿼리 파라미터 초기화
+                    st.rerun()
+
+                # 선택되었으면 NEXT 버튼 표시
+                selected_label = {
+                    "mental_health": "정신건강",
+                    "relationship_conflict": "관계갈등"
+                }.get(selected_topic, None)
+
                 if selected_label:
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
                         st.rerun()
-        
+
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
 
