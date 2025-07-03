@@ -36,10 +36,10 @@ def run():
 
     # 인트로 메시지
     intro_messages = [
-        "Hi! I'm your doppelgänger chatbot created based on your data. Nice to meet you!",
-        "Before we officially begin, let me explain how our conversation will go.",
-        "I'm going to ask you a few questions on a certain topic. Based on your answers, I'll show you 'my thoughts on your answers' in three parts. You can read each part and evaluate it right away.",
-        "Okay, let's get started!"
+        "안녕! 나는 너의 데이터를 기반으로 만들어진 너의 AITwinBot이야. 만나서 반가워!",
+        "본격적으로 시작하기 전에, 우리 대화가 어떻게 진행될지 간단히 설명할.",
+        "내가 특정 주제에 대해 몇 가지 물어볼게. 그걸 바탕으로, 이 주제에 대한 내 생각을 세 부분으로 나누어 얘기할거야. 마지막엔 대화가 어땠는지 평가할 수 있는 설문 링크를 알려 줄게. 꼭 참여해 줘!",
+        "좋아, 그럼 시작할게!"
     ]
 
     # 인트로 단계 처리
