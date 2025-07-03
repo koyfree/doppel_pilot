@@ -69,19 +69,23 @@ elif st.session_state["step"] == "instructions":
         st.session_state["step"] = "chat"
         st.rerun()
 
+# ✅ 새로운 중간 단계: 화면 비우고 자연 전환
+elif st.session_state["step"] == "chat_loading":
+    # 화면 비우기
+    placeholder = st.empty()
+    placeholder.empty()
+
+    # 약간의 지연 후 다음 단계로
+    time.sleep(0.5)
+    st.session_state["step"] = "chat"
+    st.rerun()
+
+
 # 단계 3: 챗봇 대화 시작
 elif st.session_state["step"] == "chat":
-    if "chat_ready" not in st.session_state:
-        # 1. 처음 chat 단계 진입 시 화면을 잠시 비우고 리셋
-        st.session_state.chat_ready = True
-        st.empty()  # 비우는 코드
-        time.sleep(0.2)
-        st.rerun()
-    else:
-        # 2. 여기서 실제 챗봇 실행
-        topic = st.session_state["topic"]
-        if topic == "mental_health":
-            import test as app
-        elif topic == "relationship_conflict":
-            import dpl_rel_new as app
-        app.run()
+    topic = st.session_state["topic"]
+    if topic == "mental_health":
+        import test as app
+    elif topic == "relationship_conflict":
+        import dpl_rel_new as app
+    app.run()
