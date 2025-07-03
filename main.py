@@ -27,10 +27,10 @@ st.markdown("""
     font-weight: bold;
     margin-bottom: 12px;
 }
-.center-radio {
+.radio-wrapper {
     display: flex;
     justify-content: center;
-    margin-top: 0px;
+    margin-top: 5px;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -83,6 +83,15 @@ if st.session_state["step"] == "start":
                             <div>{topic_options['정신건강']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
+                    with st.container():
+                        if st.radio(
+                            label="",
+                            options=["정신건강"],
+                            key="radio_mh",
+                            index=None,
+                            label_visibility="collapsed"
+                        ) == "정신건강":
+                            st.session_state["radio_topic"] = "정신건강"
 
                 with col2:
                     selected = "selected" if selected_label == "관계갈등" else ""
@@ -92,19 +101,17 @@ if st.session_state["step"] == "start":
                             <div>{topic_options['관계갈등']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
+                    with st.container():
+                        if st.radio(
+                            label="",
+                            options=["관계갈등"],
+                            key="radio_rel",
+                            index=None,
+                            label_visibility="collapsed"
+                        ) == "관계갈등":
+                            st.session_state["radio_topic"] = "관계갈등"
 
-                # ✅ 카드 밑 중앙 정렬된 라디오 버튼 그룹 (선택 기능 정상 작동)
-                st.markdown('<div class="center-radio">', unsafe_allow_html=True)
-                selected_label = st.radio(
-                    label="",  # 라벨 제거
-                    options=["정신건강", "관계갈등"],
-                    horizontal=True,
-                    index=["정신건강", "관계갈등"].index(selected_label) if selected_label else 0,
-                    key="radio_topic"
-                )
-                st.markdown('</div>', unsafe_allow_html=True)
-
-                # 상태 저장 및 다음 버튼
+                selected_label = st.session_state.get("radio_topic")
                 if selected_label:
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["selected_label"] = selected_label
