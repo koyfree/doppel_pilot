@@ -27,6 +27,11 @@ st.markdown("""
     font-weight: bold;
     margin-bottom: 12px;
 }
+.center-radio {
+    display: flex;
+    justify-content: center;
+    margin-top: 0px;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -66,10 +71,12 @@ if st.session_state["step"] == "start":
                     }
                 }
 
+                selected_label = st.session_state.get("radio_topic")
+
                 col1, col2 = st.columns(2)
 
                 with col1:
-                    selected = "selected" if st.session_state.get("radio_topic") == "정신건강" else ""
+                    selected = "selected" if selected_label == "정신건강" else ""
                     st.markdown(f"""
                         <div class="topic-card {selected}">
                             <div class="topic-title">정신건강</div>
@@ -77,17 +84,8 @@ if st.session_state["step"] == "start":
                         </div>
                     """, unsafe_allow_html=True)
 
-                    # 카드 아래에 라디오 버튼 배치
-                    if st.radio(
-                        label="",  # 라벨 제거
-                        options=["정신건강"],
-                        key="radio_mh",
-                        label_visibility="collapsed"
-                    ):
-                        st.session_state["radio_topic"] = "정신건강"
-
                 with col2:
-                    selected = "selected" if st.session_state.get("radio_topic") == "관계갈등" else ""
+                    selected = "selected" if selected_label == "관계갈등" else ""
                     st.markdown(f"""
                         <div class="topic-card {selected}">
                             <div class="topic-title">관계갈등</div>
@@ -95,15 +93,18 @@ if st.session_state["step"] == "start":
                         </div>
                     """, unsafe_allow_html=True)
 
-                    if st.radio(
-                        label="",  # 라벨 제거
-                        options=["관계갈등"],
-                        key="radio_rel",
-                        label_visibility="collapsed"
-                    ):
-                        st.session_state["radio_topic"] = "관계갈등"
+                # ✅ 카드 밑 중앙 정렬된 라디오 버튼 그룹 (선택 기능 정상 작동)
+                st.markdown('<div class="center-radio">', unsafe_allow_html=True)
+                selected_label = st.radio(
+                    label="",  # 라벨 제거
+                    options=["정신건강", "관계갈등"],
+                    horizontal=True,
+                    index=["정신건강", "관계갈등"].index(selected_label) if selected_label else 0,
+                    key="radio_topic"
+                )
+                st.markdown('</div>', unsafe_allow_html=True)
 
-                selected_label = st.session_state.get("radio_topic")
+                # 상태 저장 및 다음 버튼
                 if selected_label:
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["selected_label"] = selected_label
