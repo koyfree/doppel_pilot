@@ -6,19 +6,12 @@ st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 # CSS 스타일 설정
 st.markdown("""
 <style>
-.topic-container-wrapper {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
 .topic-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-items: center;
     gap: 40px;
     margin-top: 20px;
-    flex-wrap: wrap;
 }
 .topic-card {
     width: 300px;
@@ -60,7 +53,7 @@ if "step" not in st.session_state:
 # STEP 1: ID 입력 + 주제 선택
 if st.session_state["step"] == "start":
     st.title("🧠 AITwinBot 실험 연구")
-    st.markdown("설문 초반에 입력하신 ID를 동일한까드로 기입해 주세요. 잍어 버리신 경우 관리자에게 문의해 주세요 :)")
+    st.markdown("설문 초반에 입력하신 ID를 동일하게 기입해 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요 :)")
 
     user_name = st.text_input("ID")
 
@@ -99,7 +92,7 @@ if st.session_state["step"] == "start":
 
                 selected_topic = st.session_state.get("topic", "")
 
-                st.markdown('<div class="topic-container-wrapper"><div class="topic-container">', unsafe_allow_html=True)
+                st.markdown('<div class="topic-container">', unsafe_allow_html=True)
 
                 # 정신건강 카드
                 mental_selected = "selected" if selected_topic == "mental_health" else ""
@@ -127,7 +120,7 @@ if st.session_state["step"] == "start":
                 </div>
                 """, unsafe_allow_html=True)
 
-                st.markdown('</div></div>', unsafe_allow_html=True)
+                st.markdown('</div>', unsafe_allow_html=True)
 
                 if selected_label:
                     st.success(f"선택된 주제: {selected_label}")
