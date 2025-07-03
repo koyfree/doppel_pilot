@@ -111,9 +111,10 @@ if st.session_state["step"] == "start":
                 st.markdown(cards_html, unsafe_allow_html=True)
 
                 # NEXT 버튼 노출
-                if selected_topic:
-                    reverse_lookup = {v: k for k, v in topic_options.items()}
-                    selected_label = reverse_lookup[selected_topic]
+                if "topic" in st.session_state:
+                    selected_topic = st.session_state["topic"]
+                    selected_label = [k for k, v in topic_options.items() if v == selected_topic][0]
+                    
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
