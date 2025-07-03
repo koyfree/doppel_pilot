@@ -111,15 +111,17 @@ if st.session_state["step"] == "start":
                 st.markdown(cards_html, unsafe_allow_html=True)
 
                 # NEXT 버튼 노출
-                if "topic" in st.session_state:
-                    selected_topic = st.session_state["topic"]
-                    selected_label = [k for k, v in topic_options.items() if v == selected_topic][0]
-                    
+                selected_topic = st.session_state.get("topic", "")
+                reverse_lookup = {v: k for k, v in topic_options.items()}
+                selected_label = reverse_lookup.get(selected_topic)
+                
+                if selected_label:
                     st.success(f"선택된 주제: {selected_label}")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
                         st.rerun()
 
+        
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
 
