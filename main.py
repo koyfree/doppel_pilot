@@ -58,6 +58,7 @@ if st.session_state["step"] == "start":
                 st.session_state["user_name"] = user_name
                 st.session_state["profile"] = knowledge[user_name]
 
+                st.markdown("")
                 st.markdown("### 대화 주제를 선택해 주세요.")
 
                 topic_options = {
@@ -117,6 +118,7 @@ if st.session_state["step"] == "start":
                     st.session_state["selected_label"] = selected_label
                     st.session_state["topic"] = selected_key
                     st.success(f"선택된 주제: {selected_label}")
+                    st.markdown("")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
                         st.rerun()
