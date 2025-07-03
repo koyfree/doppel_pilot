@@ -14,7 +14,7 @@ st.markdown("""
     font-size: 16px;
     font-weight: 400;
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-    height: 180px;
+    height: 190px;
     box-sizing: border-box;
     transition: border 0.2s ease;
     margin-bottom: 10px;
@@ -118,7 +118,7 @@ if st.session_state["step"] == "start":
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["selected_label"] = selected_label
                     st.session_state["topic"] = selected_key
-                    st.success(f"선택된 주제: {selected_label}")
+                    st.success(f"{selected_label} 주제를 선택하셨습니다. NEXT 버튼을 눌러 진행해 주세요.")
                     st.markdown("")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
