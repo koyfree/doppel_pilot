@@ -118,7 +118,7 @@ if st.session_state["step"] == "start":
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["selected_label"] = selected_label
                     st.session_state["topic"] = selected_key
-                    st.success(f"{selected_label} 주제를 선택하셨습니다. NEXT 버튼을 눌러 진행해 주세요.")
+                    st.success(f"{selected_label} 주제를 선택하셨습니다. 아래 NEXT 버튼을 눌러 진행해 주세요.")
                     st.markdown("")
                     if st.button("➡️ NEXT"):
                         st.session_state["step"] = "instructions"
