@@ -6,12 +6,12 @@ st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 # CSS 스타일 설정
 st.markdown("""
 <style>
-.topic-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    justify-items: center;
+.card-row {
+    display: flex;
+    justify-content: center;
     gap: 40px;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 .topic-card {
     width: 300px;
@@ -25,6 +25,7 @@ st.markdown("""
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     transition: transform 0.2s ease, box-shadow 0.2s ease, border 0.2s ease;
     border: 4px solid transparent;
+    box-sizing: border-box;
 }
 .topic-card.selected {
     border: 4px solid #f63366;
@@ -33,6 +34,7 @@ st.markdown("""
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 12px;
+    color: white;
 }
 .center-radio {
     display: flex;
@@ -92,7 +94,7 @@ if st.session_state["step"] == "start":
 
                 selected_topic = st.session_state.get("topic", "")
 
-                st.markdown('<div class="topic-container">', unsafe_allow_html=True)
+                st.markdown('<div class="card-row">', unsafe_allow_html=True)
 
                 # 정신건강 카드
                 mental_selected = "selected" if selected_topic == "mental_health" else ""
