@@ -3,12 +3,12 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-# 스타일 추가
+# 카드 스타일
 st.markdown("""
 <style>
 .topic-card {
-    background-color: #1b5b84;
-    color: white;
+    background-color: #ffffff;
+    color: black;
     padding: 25px;
     border-radius: 12px;
     font-size: 16px;
@@ -16,17 +16,13 @@ st.markdown("""
     box-shadow: 0 4px 8px rgba(0,0,0,0.15);
     height: 230px;
     box-sizing: border-box;
-    transition: border 0.2s ease;
-}
-.topic-card.selected {
-    border: 4px solid #f63366;
 }
 .topic-title {
     font-size: 20px;
     font-weight: bold;
     margin-bottom: 12px;
 }
-.radio-center {
+.radio-container {
     display: flex;
     justify-content: center;
     margin-top: 12px;
@@ -70,37 +66,32 @@ if st.session_state["step"] == "start":
                     }
                 }
 
-                # 선택 상태 저장
+                # 가로 두 칼럼 생성
+                col1, col2 = st.columns(2)
                 selected_label = st.session_state.get("selected_label", None)
 
-                # 두 컬럼 렌더링
-                col1, col2 = st.columns(2)
-
+                # 카드 + 라디오 렌더링
                 with col1:
-                    selected = "selected" if selected_label == "정신건강" else ""
                     st.markdown(f"""
-                        <div class="topic-card {selected}">
+                        <div class="topic-card">
                             <div class="topic-title">정신건강</div>
                             <div>{topic_options['정신건강']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
                     with st.container():
-                        with st.markdown('<div class="radio-center">', unsafe_allow_html=True):
-                            if st.radio(" ", ["정신건강"], horizontal=True, label_visibility="collapsed") == "정신건강":
-                                st.session_state["selected_label"] = "정신건강"
+                        if st.radio(" ", ["정신건강"], horizontal=True, label_visibility="collapsed") == "정신건강":
+                            st.session_state["selected_label"] = "정신건강"
 
                 with col2:
-                    selected = "selected" if selected_label == "관계갈등" else ""
                     st.markdown(f"""
-                        <div class="topic-card {selected}">
+                        <div class="topic-card">
                             <div class="topic-title">관계갈등</div>
                             <div>{topic_options['관계갈등']['description']}</div>
                         </div>
                     """, unsafe_allow_html=True)
                     with st.container():
-                        with st.markdown('<div class="radio-center">', unsafe_allow_html=True):
-                            if st.radio("  ", ["관계갈등"], horizontal=True, label_visibility="collapsed") == "관계갈등":
-                                st.session_state["selected_label"] = "관계갈등"
+                        if st.radio("  ", ["관계갈등"], horizontal=True, label_visibility="collapsed") == "관계갈등":
+                            st.session_state["selected_label"] = "관계갈등"
 
                 selected_label = st.session_state.get("selected_label", None)
                 if selected_label:
