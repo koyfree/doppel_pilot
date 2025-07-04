@@ -32,7 +32,7 @@ def run():
             st.markdown(msg["content"])
 
     # 시스템 프롬프트
-    system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
+    system_prompt = SYSTEM_PROMPT_REL.replace("{knowledge}", st.session_state.profile)
 
     # 인트로 메시지
     intro_messages = [
