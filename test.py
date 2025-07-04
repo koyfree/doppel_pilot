@@ -113,17 +113,28 @@ def run():
 
         st.chat_message("assistant").markdown(reply)
         st.session_state.messages.append({"role": "assistant", "content": reply})
+        
+        # 아래로 스크롤
         st.markdown("""
-<script>
-window.scrollTo(0, document.body.scrollHeight);
-</script>
-""", unsafe_allow_html=True)
+        <script>
+        window.scrollTo(0, document.body.scrollHeight);
+        </script>
+        """, unsafe_allow_html=True)
         
         # 단계 전환: 사용자 입력 이후 다음 단계는 이미 위에서 처리됨
         if st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
             st.session_state.awaiting_user = False
+            st.markdown("""
+            <script>
+            setTimeout(function() {
+            window.scrollTo(0, document.body.scrollHeight);
+            }, 500);
+            </script>
+            """, unsafe_allow_html=True)
+
             time.sleep(0.5)
+        
         elif st.session_state.phase == "insight":
             st.session_state.phase = "suggestion_button"
             st.session_state.awaiting_user = False
