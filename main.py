@@ -144,7 +144,7 @@ elif st.session_state["step"] == "instructions":
 elif st.session_state["step"] == "chat":
     topic = st.session_state["topic"]
     if topic == "mental_health":
-        import test as app
+        import dpl_mtl as app
     elif topic == "relationship_conflict":
-        import dpl_rel_new as app
+        import dpl_rel as app
     app.run()
