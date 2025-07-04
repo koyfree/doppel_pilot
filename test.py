@@ -5,7 +5,6 @@ import time
 
 st.markdown("""
 <style>
-/* assistant 말풍선 간 간격 줄이기 */
 div.stChatMessage {
     margin-bottom: 0.1rem !important;
 }
@@ -42,12 +41,10 @@ def run():
         "좋아, 그럼 시작할게!"
     ]
 
-    # 인트로 단계 처리
+    # 인트로 단계
     if st.session_state.phase == "intro":
         if st.session_state.intro_index < len(intro_messages):
             current_msg = intro_messages[st.session_state.intro_index]
-
-            # 이미 추가된 메시지인지 확인
             if len(st.session_state.messages) == st.session_state.intro_index:
                 with st.chat_message("assistant"):
                     st.markdown(current_msg)
@@ -74,20 +71,19 @@ def run():
                 st.session_state.phase = "suggestion"
             st.rerun()
 
-    # 사용자 입력 허용 여부
+    # 사용자 입력
     allow_input = st.session_state.phase in ["prompt1", "followup1", "followup2", "followup3"]
     user_input = None
     if allow_input and not st.session_state.awaiting_response:
         user_input = st.chat_input("메시지를 입력해 주세요.")
 
-    # 사용자 입력 처리 및 phase 전환
     if user_input and not st.session_state.awaiting_response:
         st.chat_message("user").markdown(user_input)
         st.session_state.messages.append({"role": "user", "content": user_input})
         st.session_state.user_inputs.append(user_input)
         st.session_state.pending_user_input = user_input
 
-        # 🔽 사용자 입력 시 phase 전환
+        # phase 전환
         if st.session_state.phase == "prompt1":
             st.session_state.phase = "followup1"
         elif st.session_state.phase == "followup1":
@@ -113,31 +109,33 @@ def run():
 
         st.chat_message("assistant").markdown(reply)
         st.session_state.messages.append({"role": "assistant", "content": reply})
-        
-        # 아래로 스크롤
+
+        # 스크롤 유지
         st.markdown("""
         <script>
-        window.scrollTo(0, document.body.scrollHeight);
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         </script>
         """, unsafe_allow_html=True)
-        
-        # 단계 전환: 사용자 입력 이후 다음 단계는 이미 위에서 처리됨
+
+        # 단계 처리
         if st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
-            st.session_state.awaiting_user = False
+            st.session_state.awaiting_user = True  # 사용자 응답 기다림
+            st.session_state.awaiting_response = False
+
+            # 스크롤만 유지하고 rerun은 하지 않음!
             st.markdown("""
             <script>
             setTimeout(function() {
-            window.scrollTo(0, document.body.scrollHeight);
-            }, 500);
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            }, 300);
             </script>
             """, unsafe_allow_html=True)
+            return
 
-            time.sleep(0.5)
-        
         elif st.session_state.phase == "insight":
             st.session_state.phase = "suggestion_button"
-            st.session_state.awaiting_user = False
+            st.session_state.awaiting_user = True
         elif st.session_state.phase == "suggestion":
             time.sleep(1)
             final_msg1 = "우리 대화는 여기까지야! 얘기 나눠줘서 고마워😊"
