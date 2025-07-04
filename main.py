@@ -131,8 +131,8 @@ elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("### 📝 연구 안내")
     st.write("""
-        이제부터 당신은 당신의 AITwinBot과 얘기하게 됩니다.  
-        이 챗봇은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며, 대화를 통해 당신에 대해 더 잘 알게 됩니다.
+        이제부터 당신은 AITwinBot과 얘기하게 됩니다.  
+        이 TwinBot은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며, 대화를 통해 당신에 대해 더 잘 알게 됩니다.
 
         대화를 시작하시려면 아래 '시작하기' 버튼을 눌러 주세요.
     """)
