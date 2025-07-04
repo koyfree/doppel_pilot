@@ -40,7 +40,7 @@ if "step" not in st.session_state:
 
 if st.session_state["step"] == "start":
     st.title("🧠 AITwinBot 실험 연구")
-    st.markdown("설문 초반에 입력하신 ID를 동일하게 기입해 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요 :)")
+    st.markdown("설문 초반에 입력하신 ID를 동일하게 기입한 뒤 Enter키를 눌러 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요 😊")
 
     user_name = st.text_input("ID")
 
@@ -118,9 +118,9 @@ if st.session_state["step"] == "start":
                     selected_key = topic_options[selected_label]["key"]
                     st.session_state["selected_label"] = selected_label
                     st.session_state["topic"] = selected_key
-                    st.success(f"{selected_label} 주제를 선택하셨습니다. 아래 NEXT 버튼을 눌러 진행해 주세요.")
+                    st.success(f"{selected_label} 주제를 선택하셨습니다. 아래 '다음' 버튼을 눌러 진행해 주세요.")
                     st.markdown("")
-                    if st.button("➡️ NEXT"):
+                    if st.button("➡️ 다음"):
                         st.session_state["step"] = "instructions"
                         st.rerun()
 
@@ -137,7 +137,7 @@ elif st.session_state["step"] == "instructions":
         대화를 시작하시려면 아래 '시작하기' 버튼을 눌러 주세요.
     """)
 
-    if st.button("👉 시작하기"):
+    if st.button("➡️ 시작하기"):
         st.session_state["step"] = "chat"
         st.rerun()
 
