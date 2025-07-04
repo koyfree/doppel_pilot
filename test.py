@@ -113,7 +113,12 @@ def run():
 
         st.chat_message("assistant").markdown(reply)
         st.session_state.messages.append({"role": "assistant", "content": reply})
-
+        st.markdown("""
+<script>
+window.scrollTo(0, document.body.scrollHeight);
+</script>
+""", unsafe_allow_html=True)
+        
         # 단계 전환: 사용자 입력 이후 다음 단계는 이미 위에서 처리됨
         if st.session_state.phase == "reflection":
             st.session_state.phase = "insight_button"
@@ -128,7 +133,7 @@ def run():
             final_msg2 = "📋 마지막 설문은 여기 링크에서 진행하면 돼!\n👉 [설문 링크](https://docs.google.com/forms/d/e/1FAIpQLScVEoXWLJiS5QN8X3HuFs_dyKnio-Nt759OazvofRQO84dbvw/viewform?usp=dialog)"
             st.chat_message("assistant").markdown(final_msg1)
             st.session_state.messages.append({"role": "assistant", "content": final_msg1})
-            time.sleep(0.5)
+            time.sleep(1)
             st.chat_message("assistant").markdown(final_msg2)
             st.session_state.messages.append({"role": "assistant", "content": final_msg2})
             st.session_state.phase = "done"
