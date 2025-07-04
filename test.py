@@ -62,10 +62,10 @@ def run():
 
     # YES(응) 버튼 처리
     if st.session_state.phase in ["insight_button", "suggestion_button"]:
-        if st.button("✅ 응!"):
-            st.session_state.messages.append({"role": "user", "content": "응!"})
-            st.chat_message("user").markdown("응!")
-            st.session_state.user_inputs.append("응!")
+        if st.button("👌응!"):
+            st.session_state.messages.append({"role": "user", "content": "응"})
+            st.chat_message("user").markdown("응")
+            st.session_state.user_inputs.append("응")
             st.session_state.awaiting_user = False
             st.session_state.awaiting_response = True
             if st.session_state.phase == "insight_button":
@@ -124,9 +124,12 @@ def run():
             st.session_state.awaiting_user = False
         elif st.session_state.phase == "suggestion":
             time.sleep(1)
-            final_msg = "우리 대화는 여기까지야! 얘기 나눠줘서 고마워😊\n📋 마지막 설문은 아래 링크에서 진행하면 돼!\n👉 [설문 링크](https://docs.google.com/forms/d/e/1FAIpQLScVEoXWLJiS5QN8X3HuFs_dyKnio-Nt759OazvofRQO84dbvw/viewform?usp=dialog)"
-            st.chat_message("assistant").markdown(final_msg)
-            st.session_state.messages.append({"role": "assistant", "content": final_msg})
+            final_msg1 = "우리 대화는 여기까지야! 얘기 나눠줘서 고마워😊"
+            final_msg2 = "📋 마지막 설문은 여기 링크에서 진행하면 돼!\n👉 [설문 링크](https://docs.google.com/forms/d/e/1FAIpQLScVEoXWLJiS5QN8X3HuFs_dyKnio-Nt759OazvofRQO84dbvw/viewform?usp=dialog)"
+            st.chat_message("assistant").markdown(final_msg1)
+            time.sleep(0.5)
+            st.chat_message("assistant").markdown(final_msg2)
+            st.session_state.messages.append({"role": "assistant", "content": final_msg1})
             st.session_state.phase = "done"
 
         st.session_state.awaiting_response = False
