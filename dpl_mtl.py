@@ -139,7 +139,7 @@ def run():
             st.session_state.phase = "suggestion_button"
             st.session_state.awaiting_user = False
         elif st.session_state.phase == "suggestion":
-            time.sleep(1)
+            time.sleep(3)
             final_msg1 = "우리 대화는 여기까지야! 얘기 나눠줘서 고마워😊"
             final_msg2 = "📋대화가 어땠는지에 대한 평가는 여기 링크에서 알려줘!\n👉 [설문 링크](https://docs.google.com/forms/d/e/1FAIpQLScVEoXWLJiS5QN8X3HuFs_dyKnio-Nt759OazvofRQO84dbvw/viewform?usp=dialog)"
             st.chat_message("assistant").markdown(final_msg1)
