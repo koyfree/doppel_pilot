@@ -65,11 +65,11 @@ if st.session_state["step"] == "start":
                 topic_options = {
                     "정신건강": {
                         "key": "mental_health",
-                        "description": "이 주제를 선택하면 당신은 AITwinBot과\n 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다."
+                        "description": "이 주제를 선택하면 당신은 TwinBot과\n 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다."
                     },
                     "관계갈등": {
                         "key": "relationship_conflict",
-                        "description": "이 주제를 선택하면 당신은 AITwinBot과\n 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
+                        "description": "이 주제를 선택하면 당신은 TwinBot과\n 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
                     }
                 }
 
