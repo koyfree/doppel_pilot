@@ -53,7 +53,7 @@ response_map = {
     "Strongly disagree": 1,
     "Disagree": 2,
     "Somewhat disagree": 3,
-    "Neutral": 4,
+    "Neither disagree nor agree": 4,
     "Somewhat agree": 5,
     "Agree": 6,
     "Strongly agree": 7
