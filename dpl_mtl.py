@@ -12,7 +12,7 @@ div.stChatMessage {
 </style>
 """, unsafe_allow_html=True)
 
-print(knowledge)
+print(st.session_state.profile)
 
 def run():
     st.title("🧠 AITwinBot 대화 세션")
