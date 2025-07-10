@@ -129,19 +129,25 @@ if st.session_state["step"] == "start":
 
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
+
+    # ✅ 디버깅용 출력 (개발 중에만 사용하세요)
+    st.markdown(f"**[DEBUG] session_state keys:** `{list(st.session_state.keys())}`")
+    st.markdown(f"**[DEBUG] profile 존재 여부:** `{'profile' in st.session_state}`")
+    st.markdown(f"**[DEBUG] profile 값:** `{repr(st.session_state.get('profile', '없음'))}`")
+
+    # ✅ profile 존재 여부 확인
+    profile_text = st.session_state.get("profile", "").strip()
+
+    if not profile_text:
+        st.error("⚠️ 프로필 정보가 누락되었습니다. ID를 다시 입력해 주세요.")
+        st.session_state["step"] = "start"
+        st.rerun()
+
+    # ✅ profile 정보 표시
     st.markdown("### 📝 연구 안내")
+    st.markdown("#### 🤖 TwinBot이 참고할 당신의 정보:")
+    st.markdown(f"```text\n{profile_text}\n```")
 
-
-    profile_text = st.session_state["profile"].strip()
-
-    if profile_text:
-        st.markdown("#### 🤖 TwinBot이 참고할 당신의 정보:")
-        st.markdown(f"```text\n{profile_text}\n```")
-    else:
-        st.warning("⚠️ 아직 프로필 정보가 비어 있어요.")
-
-    
-    st.write(st.session_state["profile"])
     st.write("""
         이제부터 당신은 AITwinBot과 얘기하게 됩니다.  
         이 TwinBot은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며, 대화를 통해 당신에 대해 더 잘 알게 됩니다.
