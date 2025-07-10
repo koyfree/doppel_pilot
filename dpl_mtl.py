@@ -25,6 +25,12 @@ def run():
         st.session_state.awaiting_response = False
         st.session_state.pending_user_input = None
         st.session_state.profile = st.session_state.get("profile", "")
+
+        import json
+        profile_json = json.dumps(st.session_state["profile"], indent=2, ensure_ascii=False)
+        debug_msg = f"🧾 디버깅용 프로필입니다:\n```json\n{profile_json}\n```"
+        st.session_state.messages.insert(0, {"role": "assistant", "content": debug_msg})
+        
     
     # 메시지 출력
     for msg in st.session_state.messages:
