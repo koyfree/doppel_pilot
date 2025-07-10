@@ -12,8 +12,6 @@ div.stChatMessage {
 </style>
 """, unsafe_allow_html=True)
 
-print(st.session_state.profile)
-
 def run():
     st.title("🧠 AITwinBot 대화 세션")
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
@@ -35,6 +33,8 @@ def run():
 
     # 시스템 프롬프트
     system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
+
+    print (system_prompt)
     
     # 인트로 메시지
     intro_messages = [
