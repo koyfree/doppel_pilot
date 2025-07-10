@@ -3,9 +3,6 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
-if "profile" in st.session_state:
-    st.write(st.session_state["profile"])
-
 # 스타일 정의
 st.markdown("""
 <style>
@@ -130,9 +127,6 @@ if st.session_state["step"] == "start":
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
 
-
-st.write(st.session_state["profile"])
-
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("### 📝 연구 안내")
@@ -150,6 +144,7 @@ elif st.session_state["step"] == "instructions":
 elif st.session_state["step"] == "chat":
     topic = st.session_state["topic"]
     if topic == "mental_health":
+        st.write(st.session_state["profile"])
         import dpl_mtl as app
     elif topic == "relationship_conflict":
         import dpl_rel as app
