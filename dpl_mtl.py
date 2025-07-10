@@ -25,13 +25,7 @@ def run():
         st.session_state.awaiting_response = False
         st.session_state.pending_user_input = None
         st.session_state.profile = st.session_state.get("profile", "")
-
-        import json
-        profile_json = json.dumps(st.session_state["profile"], indent=2, ensure_ascii=False)
-        debug_msg = f"🧾 디버깅용 프로필입니다:\n```json\n{profile_json}\n```"
-        st.session_state.messages.insert(0, {"role": "assistant", "content": debug_msg})
-        
-    
+      
     # 메시지 출력
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
@@ -47,9 +41,10 @@ def run():
         "내가 특정 주제에 대해 몇 가지 물어볼게. 그걸 바탕으로, 이 주제에 대한 내 생각을 세 부분으로 나누어 얘기할거야. 마지막엔 대화가 어땠는지 평가할 수 있는 설문 링크를 알려 줄게. 꼭 참여해 줘!",
         "좋아, 그럼 시작할게!"]
     
-    with st.chat_message("assistant"):
-        st.markdown("🧾 디버깅용 프로필입니다:")
-        st.json(st.session_state["profile"])
+    if st.session_state.profile:
+    intro_messages.append(f"참고로 나는 너에 대해 이런 정보를 갖고 있어:\n\n```\n{st.session_state.profile}\n```")
+
+    intro_messages.append("좋아, 그럼 시작할게!")
     
     # 인트로 단계 처리
     if st.session_state.phase == "intro":
