@@ -57,8 +57,6 @@ if st.session_state["step"] == "start":
                 st.success("✅ 확인 되었습니다!")
                 st.session_state["user_name"] = user_name
                 st.session_state["profile"] = knowledge[user_name]
-
-                st.write(st.session_state["profile"])
                     
                 st.markdown("")
                 st.markdown("")
@@ -128,6 +126,9 @@ if st.session_state["step"] == "start":
 
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
+
+
+st.write(st.session_state["profile"])
 
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
