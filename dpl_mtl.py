@@ -34,6 +34,8 @@ def run():
     # 시스템 프롬프트
     system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
 
+    print(knowledge)
+    
     # 인트로 메시지
     intro_messages = [
         "안녕! 나는 너의 데이터를 기반으로 만들어진 너의 AITwinBot이야. 만나서 반가워!",
