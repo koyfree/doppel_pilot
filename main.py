@@ -56,83 +56,92 @@ if st.session_state["step"] == "start":
             else:
                 st.success("✅ 확인 되었습니다!")
                 st.session_state["user_name"] = user_name
-                st.session_state["profile"] = knowledge[user_name]
-                    
-                st.markdown("")
-                st.markdown("")
-                st.markdown("#### 🧾 불러온 당신의 프로필:")
-                st.markdown(f"```text\n{st.session_state['profile'].strip()}\n```")
-                st.markdown("### 대화 주제를 선택해 주세요.")
 
-                topic_options = {
-                    "정신건강": {
-                        "key": "mental_health",
-                        "description": "이 주제를 선택하면 당신은 TwinBot과\n 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다."
-                    },
-                    "관계갈등": {
-                        "key": "relationship_conflict",
-                        "description": "이 주제를 선택하면 당신은 TwinBot과\n 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
-                    }
-                }
+                # ✅ 프로필 한 번만 세팅
+                if "profile" not in st.session_state:
+                    st.session_state["profile"] = knowledge[user_name]
 
-                selected_label = st.session_state.get("radio_topic")
-
-                col1, col2 = st.columns(2)
-
-                with col1:
-                    selected = "selected" if selected_label == "정신건강" else ""
-                    st.markdown(f"""
-                        <div class="topic-card {selected}">
-                            <div class="topic-title">정신건강</div>
-                            <div>{topic_options['정신건강']['description']}</div>
-                        </div>
-                    """, unsafe_allow_html=True)
-                    with st.container():
-                        if st.radio(
-                            label="",
-                            options=["정신건강"],
-                            key="radio_mh",
-                            index=None,
-                            label_visibility="collapsed"
-                        ) == "정신건강":
-                            st.session_state["radio_topic"] = "정신건강"
-
-                with col2:
-                    selected = "selected" if selected_label == "관계갈등" else ""
-                    st.markdown(f"""
-                        <div class="topic-card {selected}">
-                            <div class="topic-title">관계갈등</div>
-                            <div>{topic_options['관계갈등']['description']}</div>
-                        </div>
-                    """, unsafe_allow_html=True)
-                    with st.container():
-                        if st.radio(
-                            label="",
-                            options=["관계갈등"],
-                            key="radio_rel",
-                            index=None,
-                            label_visibility="collapsed"
-                        ) == "관계갈등":
-                            st.session_state["radio_topic"] = "관계갈등"
-
-                selected_label = st.session_state.get("radio_topic")
-                if selected_label:
-                    selected_key = topic_options[selected_label]["key"]
-                    st.session_state["selected_label"] = selected_label
-                    st.session_state["topic"] = selected_key
-                    st.success(f"{selected_label} 주제를 선택하셨습니다. 아래 '다음' 버튼을 눌러 진행해 주세요.")
-                    st.markdown("")
-                    if st.button("➡️ 다음"):
-                        st.session_state["step"] = "instructions"
-                        st.rerun()
+                # ✅ 프로필 출력 flag
+                if "show_profile" not in st.session_state:
+                    st.session_state["show_profile"] = True
 
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
 
+    # ✅ 프로필 출력
+    if st.session_state.get("show_profile", False):
+        st.markdown("#### 🧾 불러온 당신의 프로필:")
+        st.markdown(f"```text\n{st.session_state['profile'].strip()}\n```")
+
+    # ✅ 주제 선택 영역
+    if st.session_state.get("profile"):
+        st.markdown("### 대화 주제를 선택해 주세요.")
+
+        topic_options = {
+            "정신건강": {
+                "key": "mental_health",
+                "description": "이 주제를 선택하면 당신은 TwinBot과\n 최근에 겪고 있는 스트레스나 감정적으로 힘든 일들에 대해 대화하게 됩니다."
+            },
+            "관계갈등": {
+                "key": "relationship_conflict",
+                "description": "이 주제를 선택하면 당신은 TwinBot과\n 최근에 있었던 인간관계 문제나 마음이 불편했던 상황들에 대해 대화하게 됩니다."
+            }
+        }
+
+        selected_label = st.session_state.get("radio_topic")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            selected = "selected" if selected_label == "정신건강" else ""
+            st.markdown(f"""
+                <div class="topic-card {selected}">
+                    <div class="topic-title">정신건강</div>
+                    <div>{topic_options['정신건강']['description']}</div>
+                </div>
+            """, unsafe_allow_html=True)
+            with st.container():
+                if st.radio(
+                    label="",
+                    options=["정신건강"],
+                    key="radio_mh",
+                    index=None,
+                    label_visibility="collapsed"
+                ) == "정신건강":
+                    st.session_state["radio_topic"] = "정신건강"
+
+        with col2:
+            selected = "selected" if selected_label == "관계갈등" else ""
+            st.markdown(f"""
+                <div class="topic-card {selected}">
+                    <div class="topic-title">관계갈등</div>
+                    <div>{topic_options['관계갈등']['description']}</div>
+                </div>
+            """, unsafe_allow_html=True)
+            with st.container():
+                if st.radio(
+                    label="",
+                    options=["관계갈등"],
+                    key="radio_rel",
+                    index=None,
+                    label_visibility="collapsed"
+                ) == "관계갈등":
+                    st.session_state["radio_topic"] = "관계갈등"
+
+        selected_label = st.session_state.get("radio_topic")
+        if selected_label:
+            selected_key = topic_options[selected_label]["key"]
+            st.session_state["selected_label"] = selected_label
+            st.session_state["topic"] = selected_key
+            st.success(f"{selected_label} 주제를 선택하셨습니다. 아래 '다음' 버튼을 눌러 진행해 주세요.")
+            st.markdown("")
+            if st.button("➡️ 다음"):
+                st.session_state["step"] = "instructions"
+                st.rerun()
+
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
         
-    # ✅ profile 정보 표시
     st.markdown("### 📝 연구 안내")
     st.write("""
         이제부터 당신은 AITwinBot과 얘기하게 됩니다.  
