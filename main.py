@@ -130,6 +130,7 @@ if st.session_state["step"] == "start":
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("### 📝 연구 안내")
+    st.write(st.session_state["profile"])
     st.write("""
         이제부터 당신은 AITwinBot과 얘기하게 됩니다.  
         이 TwinBot은 당신이 사전에 제공한 정보를 바탕으로 설계되었으며, 대화를 통해 당신에 대해 더 잘 알게 됩니다.
@@ -144,7 +145,6 @@ elif st.session_state["step"] == "instructions":
 elif st.session_state["step"] == "chat":
     topic = st.session_state["topic"]
     if topic == "mental_health":
-        st.write(st.session_state["profile"])
         import dpl_mtl as app
     elif topic == "relationship_conflict":
         import dpl_rel as app
