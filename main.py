@@ -58,6 +58,8 @@ if st.session_state["step"] == "start":
                 st.session_state["user_name"] = user_name
                 st.session_state["profile"] = knowledge[user_name]
 
+                st.write(st.session_state["profile"])
+                    
                 st.markdown("")
                 st.markdown("")
                 st.markdown("### 대화 주제를 선택해 주세요.")
