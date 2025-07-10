@@ -40,12 +40,7 @@ def run():
         "본격적으로 시작하기 전에, 우리 대화가 어떻게 진행될지 간단히 설명할게.",
         "내가 특정 주제에 대해 몇 가지 물어볼게. 그걸 바탕으로, 이 주제에 대한 내 생각을 세 부분으로 나누어 얘기할거야. 마지막엔 대화가 어땠는지 평가할 수 있는 설문 링크를 알려 줄게. 꼭 참여해 줘!",
         "좋아, 그럼 시작할게!"]
-    
-    if st.session_state.profile:
-    intro_messages.append(f"참고로 나는 너에 대해 이런 정보를 갖고 있어:\n\n```\n{st.session_state.profile}\n```")
 
-    intro_messages.append("좋아, 그럼 시작할게!")
-    
     # 인트로 단계 처리
     if st.session_state.phase == "intro":
         if st.session_state.intro_index < len(intro_messages):
