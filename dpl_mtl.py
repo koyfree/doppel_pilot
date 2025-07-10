@@ -15,7 +15,7 @@ div.stChatMessage {
 def run():
     st.title("🧠 AITwinBot 대화 세션")
     client = OpenAI(api_key=st.secrets["openai"]["api_key"])
-
+       
     if "messages" not in st.session_state:
         st.session_state.messages = []
         st.session_state.phase = "intro"
@@ -33,6 +33,11 @@ def run():
 
     # 시스템 프롬프트
     system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
+
+    if "profile" in st.session_state and st.session_state.intro_index == 0:
+        with st.chat_message("assistant"):
+            st.markdown("🧾 디버깅용 프로필입니다:")
+            st.json(st.session_state["profile"])
     
     # 인트로 메시지
     intro_messages = [
