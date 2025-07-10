@@ -33,11 +33,6 @@ def run():
 
     # 시스템 프롬프트
     system_prompt = SYSTEM_PROMPT_MTL.replace("{knowledge}", st.session_state.profile)
-
-    if "profile" in st.session_state and st.session_state.intro_index == 0:
-        with st.chat_message("assistant"):
-            st.markdown("🧾 디버깅용 프로필입니다:")
-            st.json(st.session_state["profile"])
     
     # 인트로 메시지
     intro_messages = [
@@ -45,7 +40,11 @@ def run():
         "본격적으로 시작하기 전에, 우리 대화가 어떻게 진행될지 간단히 설명할게.",
         "내가 특정 주제에 대해 몇 가지 물어볼게. 그걸 바탕으로, 이 주제에 대한 내 생각을 세 부분으로 나누어 얘기할거야. 마지막엔 대화가 어땠는지 평가할 수 있는 설문 링크를 알려 줄게. 꼭 참여해 줘!",
         "좋아, 그럼 시작할게!"]
-
+    
+    with st.chat_message("assistant"):
+        st.markdown("🧾 디버깅용 프로필입니다:")
+        st.json(st.session_state["profile"])
+    
     # 인트로 단계 처리
     if st.session_state.phase == "intro":
         if st.session_state.intro_index < len(intro_messages):
