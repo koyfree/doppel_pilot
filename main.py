@@ -130,6 +130,17 @@ if st.session_state["step"] == "start":
 elif st.session_state["step"] == "instructions":
     st.title("🧠 AITwinBot 실험 연구")
     st.markdown("### 📝 연구 안내")
+
+
+    profile_text = st.session_state["profile"].strip()
+
+    if profile_text:
+        st.markdown("#### 🤖 TwinBot이 참고할 당신의 정보:")
+        st.markdown(f"```text\n{profile_text}\n```")
+    else:
+        st.warning("⚠️ 아직 프로필 정보가 비어 있어요.")
+
+    
     st.write(st.session_state["profile"])
     st.write("""
         이제부터 당신은 AITwinBot과 얘기하게 됩니다.  
