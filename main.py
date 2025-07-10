@@ -3,6 +3,9 @@ from knowledge_dict import build_knowledge_dict
 
 st.set_page_config(page_title="AITwinBot 실험 연구", page_icon="🤖")
 
+if "profile" in st.session_state:
+    st.write(st.session_state["profile"])
+
 # 스타일 정의
 st.markdown("""
 <style>
