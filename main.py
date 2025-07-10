@@ -136,6 +136,8 @@ elif st.session_state["step"] == "instructions":
 
         대화를 시작하시려면 아래 '시작하기' 버튼을 눌러 주세요.
     """)
+    
+    print(knowledge)
 
     if st.button("➡️ 시작하기"):
         st.session_state["step"] = "chat"
