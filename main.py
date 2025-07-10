@@ -56,25 +56,15 @@ if st.session_state["step"] == "start":
             else:
                 st.success("✅ 확인 되었습니다!")
                 st.session_state["user_name"] = user_name
-
-                # ✅ 프로필 한 번만 세팅
-                if "profile" not in st.session_state:
-                    st.session_state["profile"] = knowledge[user_name]
-
-                # ✅ 프로필 출력 flag
-                if "show_profile" not in st.session_state:
-                    st.session_state["show_profile"] = True
-
+                st.session_state["profile"] = knowledge[user_name]
         except Exception as e:
             st.error(f"❌ 데이터를 불러오는 데 실패했습니다: {e}")
 
-    # ✅ 프로필 출력
-    if st.session_state.get("show_profile", False):
+    # ✅ profile이 있는 경우 언제나 출력
+    if "profile" in st.session_state:
         st.markdown("#### 🧾 불러온 당신의 프로필:")
         st.markdown(f"```text\n{st.session_state['profile'].strip()}\n```")
 
-    # ✅ 주제 선택 영역
-    if st.session_state.get("profile"):
         st.markdown("### 대화 주제를 선택해 주세요.")
 
         topic_options = {
