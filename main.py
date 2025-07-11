@@ -40,7 +40,7 @@ if "step" not in st.session_state:
 
 if st.session_state["step"] == "start":
     st.title("🧠 AITwinBot 실험 연구")
-    st.markdown("설문 초반에 입력하신 ID를 동일하게 기입한 뒤 Enter키를 눌러 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요 😊")
+    st.markdown("설문 초반에 입력하신 ID를 동일하게 dddd기입한 뒤 Enter키를 눌러 주세요. 잊어 버리신 경우 관리자에게 문의해 주세요 😊")
 
     user_name = st.text_input("ID")
 
