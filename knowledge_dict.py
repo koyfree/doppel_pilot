@@ -123,7 +123,8 @@ Profile:
 [Demographics]
 \t•\tAge: {row['AGE']}
 \t•\tSex: {row['SEX']}
-\t•\tOccupation: {row['JOB']}
+\t•\tJOB_type: {row['JOB_type']}
+\t•\tJOB_status: {row['JOB_status']}
 \t•\tLiving Style: {row['LIVING']}
 
 [Personality]
@@ -138,3 +139,4 @@ Profile:
 """.strip()
 
     return knowledge
+
