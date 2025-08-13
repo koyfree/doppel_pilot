@@ -130,13 +130,14 @@ Profile:
 [Personality]
 {summary_text}
 
-[Top 5 Things this character loves and hates]
-\t•\tWhat this character love: {row['top5_love']}
-\t•\tWhat this character hate: {row['top5_hate']}
+#[Top 5 Things this character loves and hates]
+#\t•\tWhat this character love: {row['top5_love']}
+#\t•\tWhat this character hate: {row['top5_hate']}
 
-[Weekly Activities Overview]
-\t•\t{row['weekly_activities']}
+#[Weekly Activities Overview]
+#\t•\t{row['weekly_activities']}
 """.strip()
 
     return knowledge
+
 
